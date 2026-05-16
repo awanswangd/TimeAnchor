@@ -1,9 +1,10 @@
-[gd_scene load_steps=7 format=4 uid="uid://cwnnimadu5oey"]
+[gd_scene load_steps=8 format=4 uid="uid://cwnnimadu5oey"]
 
 [ext_resource type="Texture2D" uid="uid://dwdpmdn22ala1" path="res://Assets/placeholder_tile.png" id="1_sblpm"]
 [ext_resource type="PackedScene" uid="uid://di24n3xg8ajn0" path="res://Scene/player.tscn" id="2_r34rm"]
 [ext_resource type="Script" uid="uid://c0bcdy5onm6p0" path="res://Scripts/grid_manager.gd" id="3_r34rm"]
 [ext_resource type="PackedScene" uid="uid://cpn2jl5qoe57h" path="res://Scene/timeanchor.tscn" id="4_2wwxx"]
+[ext_resource type="Script" uid="uid://dx5tuvp2ugmt1" path="res://Scripts/enemy_spawner.gd" id="6_1xcnr"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_2wwxx"]
 texture = ExtResource("1_sblpm")
@@ -30,3 +31,8 @@ position = Vector2(-7, 1)
 starting_energy = 10
 time_anchor_scene = ExtResource("4_2wwxx")
 arena_tilemap = NodePath("../TileMapLayer")
+
+[node name="Timer" type="Timer" parent="."]
+
+[node name="EnemySpawner" type="Node2D" parent="."]
+script = ExtResource("6_1xcnr")

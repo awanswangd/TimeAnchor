@@ -1,0 +1,22 @@
+[gd_scene load_steps=4 format=3 uid="uid://brttdp40xe7cm"]
+
+[ext_resource type="Script" uid="uid://dbh0k4n30wohh" path="res://Scripts/time_warper.gd" id="1_vn7f8"]
+[ext_resource type="Texture2D" uid="uid://jwwvvdv83vdr" path="res://Assets/icon.svg" id="2_ka87d"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_rnh73"]
+size = Vector2(116, 111)
+
+[node name="TimeWarper" type="CharacterBody2D"]
+modulate = Color(0.96189, 0, 0.415493, 1)
+position = Vector2(338, 287)
+scale = Vector2(0.5, 0.5)
+script = ExtResource("1_vn7f8")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+modulate = Color(0.96189, 0, 0.415493, 1)
+texture = ExtResource("2_ka87d")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+modulate = Color(0.96189, 0, 0.415493, 1)
+position = Vector2(0, 0.5)
+shape = SubResource("RectangleShape2D_rnh73")

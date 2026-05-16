@@ -8,7 +8,7 @@ extends StaticBody2D
 var tile_size: float = 64.0 
 
 # [TAMBAHAN BARU 2: Rujukan ke node visual agar gampang diakses]
-@onready var aura_visual: Sprite2D = $AuraVisual
+@onready var aura_visual: Sprite2D = $AuraArea/AuraVisual
 
 func _ready() -> void:
 	# Memanggil fungsi baru ini sesaat setelah jangkar ditanam
@@ -37,6 +37,14 @@ func setup_aura_visual_size() -> void:
 	aura_visual.scale = Vector2(required_scale, required_scale)
 
 # ... [Fungsi restore_surrounding_tiles lama tetap ada di bawah sini] ...
+
+func _on_aura_area_body_entered(body: Node2D) -> void:
+	if body.has_method("apply_time_warp"):
+		body.apply_time_warp(true)
+
+func _on_aura_area_body_exited(body: Node2D) -> void:
+	if body.has_method("apply_time_warp"):
+		body.apply_time_warp(false)
 
 func restore_surrounding_tiles() -> void:
 	# Mengambil rujukan ke lantai secara otomatis menggunakan Group yang baru kita buat
