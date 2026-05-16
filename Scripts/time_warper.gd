@@ -6,6 +6,7 @@ extends CharacterBody2D
 
 var current_speed: float
 var player: Node2D
+var energy_drop_scene = preload("res://Scene/EnergyDrop.tscn")
 
 func _ready() -> void:
 	add_to_group("enemy") 
@@ -37,3 +38,10 @@ func apply_time_warp(is_slowed: bool) -> void:
 	else:
 		current_speed = base_speed
 		modulate = Color.WHITE
+
+func die() -> void:
+	if energy_drop_scene != null:
+		var drop = energy_drop_scene.instantiate()
+		drop.global_position = global_position
+		get_parent().add_child(drop)
+	queue_free()

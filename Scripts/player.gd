@@ -1,39 +1,33 @@
 extends CharacterBody2D
 
-# --- Variabel Konfigurasi ---
 @export var speed: float = 200.0
 @export var max_health: int = 100
 @export var starting_energy: int = 5
 @export var anchor_cost: int = 1
-
-# Drag-and-drop file TimeAnchor.tscn dari panel FileSystem ke inspector Player
 @export var time_anchor_scene: PackedScene 
 @export var arena_tilemap: TileMapLayer
 var void_damage_timer: float = 0.0
 var void_damage_interval: float = 0.5
 var sprint_tick_timer: float = 0.0
-# --- Variabel Status ---
 var current_health: int
 var current_energy: int
-# --- Variabel Dash (Double Tap) ---
 @export var dash_speed_multiplier: float = 3.5 # Seberapa cepat melesat saat dash
 @export var dash_duration: float = 0.2 # Lama dash berlangsung (sangat singkat)
 @export var dash_cooldown_time: float = 2.5 # Jeda antar dash
 @export var dash_energy_cost: int = 1 # Biaya bensin untuk 1x dash
-
 var is_dashing: bool = false
 var dash_direction: Vector2 = Vector2.ZERO
 var dash_timer: float = 0.0
 var current_cooldown: float = 0.0
-# Variabel pembantu untuk deteksi Double Tap
 var last_key_pressed: String = ""
 var double_tap_timer: float = 0.0
 var double_tap_window: float = 0.25 # Waktu maksimal untuk tap kedua
 
-# --- Signals (Untuk komunikasi dengan UI atau Game Manager) ---
 signal health_changed(new_health)
 signal energy_changed(new_energy)
 signal anchor_placed(position)
+signal player_died
+var energy_drop_scene = preload("res://Scene/EnergyDrop.tscn")
 
 func _ready() -> void:
 	# Inisialisasi status awal
@@ -58,7 +52,6 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func handle_movement(delta: float) -> void:
 	if is_dashing:
-		# --- MODE DASH-KILL ---
 		dash_timer -= delta
 		velocity = dash_direction * (speed * dash_speed_multiplier)
 		move_and_slide()
@@ -69,13 +62,14 @@ func handle_movement(delta: float) -> void:
 			var collider = collision.get_collider()
 			if collider != null and collider.is_in_group("enemy"):
 				print("DASH-KILL SUCCESS!")
-				collider.queue_free() 
-				
+				if collider != null and collider.is_in_group("enemy"):
+					print("DASH-KILL SUCCESS!")
+					if collider.has_method("die"):
+						collider.die()
 		if dash_timer <= 0:
 			is_dashing = false 
 			
 	else:
-		# --- MODE NORMAL & SPRINT ---
 		var input_dir: Vector2 = Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
 		var current_speed = speed 
 		
@@ -169,8 +163,10 @@ func take_damage(amount: int) -> void:
 		
 
 func die() -> void:
-	# Logika hancur/kalah
-	queue_free()
+	player_died.emit()
+	hide() 
+	set_physics_process(false)
+	set_process_unhandled_input(false)
 
 func check_void_damage(delta: float) -> void:
 	if arena_tilemap == null:
