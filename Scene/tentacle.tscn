@@ -1,22 +1,87 @@
-[gd_scene load_steps=3 format=3 uid="uid://bq113iidyt11g"]
+[gd_scene load_steps=13 format=3 uid="uid://bq113iidyt11g"]
 
 [ext_resource type="Script" uid="uid://dtc8s7v6jjxiu" path="res://Scripts/tentacle.gd" id="1_fjwje"]
+[ext_resource type="Texture2D" uid="uid://sv74hr4uh2vf" path="res://Assets/Tentakel Hitam-Sheet.png" id="2_pge1m"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ky733"]
+atlas = ExtResource("2_pge1m")
+region = Rect2(0, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ch3ks"]
+atlas = ExtResource("2_pge1m")
+region = Rect2(64, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4l1e0"]
+atlas = ExtResource("2_pge1m")
+region = Rect2(128, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jyamp"]
+atlas = ExtResource("2_pge1m")
+region = Rect2(192, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lfj5w"]
+atlas = ExtResource("2_pge1m")
+region = Rect2(256, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_41o0d"]
+atlas = ExtResource("2_pge1m")
+region = Rect2(320, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_furxx"]
+atlas = ExtResource("2_pge1m")
+region = Rect2(384, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nhs85"]
+atlas = ExtResource("2_pge1m")
+region = Rect2(448, 0, 64, 64)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_t1v5d"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ky733")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ch3ks")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4l1e0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jyamp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_lfj5w")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_41o0d")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_furxx")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_nhs85")
+}],
+"loop": true,
+"name": &"default",
+"speed": 6.0
+}]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_gdsvx"]
-size = Vector2(25, 64)
+size = Vector2(61, 165)
 
 [node name="Tentacle" type="StaticBody2D"]
 position = Vector2(84, 26)
 script = ExtResource("1_fjwje")
 
-[node name="ColorRect" type="ColorRect" parent="."]
-offset_left = -1.0
-offset_top = -1.0
-offset_right = 22.0
-offset_bottom = 60.0
-color = Color(0.151009, 0.000255863, 0.269221, 1)
-metadata/_edit_use_anchors_ = true
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+texture_filter = 1
+position = Vector2(29, 31)
+scale = Vector2(3, 3)
+sprite_frames = SubResource("SpriteFrames_t1v5d")
+autoplay = "default"
+frame_progress = 0.79568
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(10.5, 30)
+position = Vector2(15, 50)
 shape = SubResource("RectangleShape2D_gdsvx")
