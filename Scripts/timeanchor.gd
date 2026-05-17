@@ -69,6 +69,5 @@ func restore_surrounding_tiles() -> void:
 			var target_cell = center_grid_pos + Vector2i(x, y)
 			var current_id = tilemap.get_cell_source_id(target_cell)
 			
-			# Cek ganda: pastikan itu Void (-1) DAN terdaftar sebagai lantai di cetak biru awal
 			if current_id == -1 and grid_manager.is_original_floor(target_cell):
 				tilemap.set_cell(target_cell, floor_id, floor_atlas_coords)

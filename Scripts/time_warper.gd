@@ -28,7 +28,6 @@ func _physics_process(delta: float) -> void:
 		if collider != null and collider.is_in_group("player"):
 			if collider.has_method("take_damage"):
 				collider.take_damage(damage)
-				#Hancur setelah menabrak player(seperti kamikaze)
 				queue_free() 
 
 func apply_time_warp(is_slowed: bool) -> void:

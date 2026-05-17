@@ -1,7 +1,5 @@
 extends Node2D
 
-# Ganti "res://TimeWarper.tscn" dengan path file musuhmu yang sebenarnya.
-# Klik kanan file musuh di panel FileSystem -> "Copy Path" -> Paste di dalam tanda kutip.
 var enemy_scene = preload("res://Scene/TimeWarper.tscn")
 
 @export var spawn_radius: float = 600.0 
@@ -11,7 +9,6 @@ var player: Node2D
 var spawn_timer: Timer
 
 func _ready() -> void:
-	# Memastikan node player bisa ditemukan
 	player = get_tree().get_first_node_in_group("player")
 	
 	spawn_timer = Timer.new()
@@ -25,8 +22,7 @@ func spawn_enemy() -> void:
 		return
 		
 	var enemy = enemy_scene.instantiate()
-	
-	# Logika lingkaran spawn di luar jangkauan kamera
+
 	var random_angle = randf() * TAU 
 	var spawn_direction = Vector2.RIGHT.rotated(random_angle)
 	var spawn_position = player.global_position + (spawn_direction * spawn_radius)
