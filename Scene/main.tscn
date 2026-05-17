@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=4 uid="uid://cwnnimadu5oey"]
+[gd_scene load_steps=12 format=4 uid="uid://cwnnimadu5oey"]
 
 [ext_resource type="Texture2D" uid="uid://dwdpmdn22ala1" path="res://Assets/placeholder_tile.png" id="1_sblpm"]
 [ext_resource type="Texture2D" uid="uid://bvd56qsavh2od" path="res://Assets/Wall.png" id="2_ow1sv"]
@@ -128,3 +128,43 @@ text = "Restart"
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
 text = "Exit"
+
+[node name="WinningPanel" type="Panel" parent="UIManager"]
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="UIManager/WinningPanel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -11.5
+offset_right = 20.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 24
+text = "MISSION SUCCESS! WARP BERHASIL!"
+
+[node name="ObjectiveLabel" type="Label" parent="UIManager"]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -11.5
+offset_right = 20.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 32
+text = "Objective Text"
