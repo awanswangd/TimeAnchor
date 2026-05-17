@@ -2,6 +2,8 @@ extends StaticBody2D
 
 @export var radius: int = 2 
 @export var floor_id: int = 0 
+@export var floor_atlas_coords: Vector2i = Vector2i(0, 0) # Tambahan untuk koordinat atlas
+
 var is_player_inside: bool = false
 var tile_size: float = 64.0 
 @onready var aura_visual: Sprite2D = $AuraArea/AuraVisual
@@ -53,16 +55,20 @@ func detonate() -> void:
 
 func restore_surrounding_tiles() -> void:
 	var tilemap = get_tree().get_first_node_in_group("arena")
-	if tilemap == null:
-		print("ERROR: Tilemap tidak ditemukan! Pastikan TileMapLayer sudah masuk grup 'arena'.")
+	var grid_manager = get_tree().get_first_node_in_group("grid_manager") # Memanggil blueprint
+	
+	if tilemap == null or grid_manager == null:
+		print("ERROR: Tilemap atau GridManager tidak ditemukan!")
 		return
+		
 	var local_pos = tilemap.to_local(global_position)
 	var center_grid_pos = tilemap.local_to_map(local_pos)
+	
 	for x in range(-radius, radius + 1):
 		for y in range(-radius, radius + 1):
 			var target_cell = center_grid_pos + Vector2i(x, y)
 			var current_id = tilemap.get_cell_source_id(target_cell)
-			if current_id == -1:
-				tilemap.set_cell(target_cell, floor_id, Vector2i(0, 0))
-				
-				# (Kamu bisa menambahkan animasi atau partikel di sini nanti)
+			
+			# Cek ganda: pastikan itu Void (-1) DAN terdaftar sebagai lantai di cetak biru awal
+			if current_id == -1 and grid_manager.is_original_floor(target_cell):
+				tilemap.set_cell(target_cell, floor_id, floor_atlas_coords)
