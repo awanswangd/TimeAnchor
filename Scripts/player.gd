@@ -2,7 +2,7 @@ extends CharacterBody2D
 
 @export var speed: float = 200.0
 @export var max_health: int = 100
-@export var starting_energy: int = 5
+@export var starting_energy: int = 100
 @export var anchor_cost: int = 1
 @export var time_anchor_scene: PackedScene 
 @export var arena_tilemap: TileMapLayer

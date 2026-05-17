@@ -1,0 +1,22 @@
+[gd_scene load_steps=3 format=3 uid="uid://bq113iidyt11g"]
+
+[ext_resource type="Script" uid="uid://dtc8s7v6jjxiu" path="res://Scripts/tentacle.gd" id="1_fjwje"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_gdsvx"]
+size = Vector2(25, 64)
+
+[node name="Tentacle" type="StaticBody2D"]
+position = Vector2(84, 26)
+script = ExtResource("1_fjwje")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+offset_left = -1.0
+offset_top = -1.0
+offset_right = 22.0
+offset_bottom = 60.0
+color = Color(0.151009, 0.000255863, 0.269221, 1)
+metadata/_edit_use_anchors_ = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(10.5, 30)
+shape = SubResource("RectangleShape2D_gdsvx")

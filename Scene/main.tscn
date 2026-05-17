@@ -30,7 +30,6 @@ arena_tilemap = NodePath("../TileMapLayer")
 
 [node name="Player" parent="." node_paths=PackedStringArray("arena_tilemap") instance=ExtResource("2_r34rm")]
 position = Vector2(-7, 1)
-starting_energy = 10
 time_anchor_scene = ExtResource("4_2wwxx")
 arena_tilemap = NodePath("../TileMapLayer")
 
@@ -39,10 +38,9 @@ arena_tilemap = NodePath("../TileMapLayer")
 [node name="EnemySpawner" type="Node2D" parent="."]
 script = ExtResource("6_1xcnr")
 
-[node name="GameManager" type="Node" parent="." node_paths=PackedStringArray("ui_manager")]
+[node name="GameManager" type="Node" parent="." groups=["game_manager"]]
 script = ExtResource("7_ow1sv")
-ui_manager = NodePath("../UIManager")
-warp_duration = 5.0
+survival_duration = 3.0
 
 [node name="UIManager" type="CanvasLayer" parent="."]
 process_mode = 3
