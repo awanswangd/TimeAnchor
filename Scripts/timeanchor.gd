@@ -38,12 +38,19 @@ func setup_aura_visual_size() -> void:
 
 func detonate() -> void:
 	print("BOOM! Time Anchor Meledak!")
+	var ui = get_tree().get_first_node_in_group("ui_manager")
+	if ui != null and ui.has_method("add_detonation"):
+		ui.add_detonation()
 	var area = $AuraArea 
 	if area == null: return
 	var overlapping_bodies = area.get_overlapping_bodies()
+	print("Benda yang kena ledakan: ", overlapping_bodies)
 	for body in overlapping_bodies:
 		if body.is_in_group("enemy") and body.has_method("die"):
+			print("Musuh ini punya fungsi die, bunuh!")
 			body.die() # Musuh mati (dan ngedrop bensin lagi!)
+		else:
+				print("ERROR: Musuh ini GA PUNYA fungsi die!")
 	queue_free()
 
 func restore_surrounding_tiles() -> void:

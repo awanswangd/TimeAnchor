@@ -5,6 +5,7 @@ extends CanvasLayer
 @onready var game_over_panel: Panel = $GameOverPanel
 @onready var restart_button: Button = $GameOverPanel/HBoxContainer/RestartButton
 @onready var exit_button: Button = $GameOverPanel/HBoxContainer/ExitButton
+@onready var warp_timer_label: Label = $WarpTimerLabel
 
 func _ready() -> void:
 	restart_button.pressed.connect(restart_game)
@@ -27,6 +28,18 @@ func update_energy(new_energy: int) -> void:
 func show_game_over() -> void:
 	game_over_panel.show() 
 	get_tree().paused = true
+	
+func hide_warp_timer() -> void:
+	var label = get_node_or_null("WarpTimerLabel")
+	if label != null:
+		label.text = ""
+		label.hide()
+
+func update_warp_timer(waktu: float) -> void:
+	var label = get_node_or_null("WarpTimerLabel")
+	if label != null:
+		label.show()
+		label.text = "WARP DALAM: " + str(ceil(waktu))
 
 func restart_game() -> void:
 	get_tree().paused = false 

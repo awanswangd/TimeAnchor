@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=4 uid="uid://cwnnimadu5oey"]
+[gd_scene load_steps=10 format=4 uid="uid://cwnnimadu5oey"]
 
 [ext_resource type="Texture2D" uid="uid://dwdpmdn22ala1" path="res://Assets/placeholder_tile.png" id="1_sblpm"]
 [ext_resource type="Texture2D" uid="uid://bvd56qsavh2od" path="res://Assets/Wall.png" id="2_ow1sv"]
@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://cpn2jl5qoe57h" path="res://Scene/timeanchor.tscn" id="4_2wwxx"]
 [ext_resource type="Script" uid="uid://dx5tuvp2ugmt1" path="res://Scripts/enemy_spawner.gd" id="6_1xcnr"]
 [ext_resource type="Script" uid="uid://ccquy3ffukec5" path="res://Scripts/ui_manager.gd" id="6_ow1sv"]
+[ext_resource type="Script" uid="uid://c31nxo4fgt5n2" path="res://scripts/game_manager.gd" id="7_ow1sv"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_2wwxx"]
 texture = ExtResource("1_sblpm")
@@ -46,6 +47,10 @@ arena_tilemap = NodePath("../TileMapLayer")
 [node name="EnemySpawner" type="Node2D" parent="."]
 script = ExtResource("6_1xcnr")
 
+[node name="GameManager" type="Node" parent="." groups=["game_manager"]]
+script = ExtResource("7_ow1sv")
+survival_duration = 3.0
+
 [node name="UIManager" type="CanvasLayer" parent="."]
 process_mode = 3
 script = ExtResource("6_ow1sv")
@@ -58,6 +63,18 @@ offset_bottom = 23.0
 offset_top = 40.0
 offset_right = 40.0
 offset_bottom = 63.0
+
+[node name="WarpTimerLabel" type="Label" parent="UIManager"]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -51.5
+offset_top = 24.0
+offset_right = 51.5
+offset_bottom = 58.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 24
+text = "Warp: 60"
 
 [node name="GameOverPanel" type="Panel" parent="UIManager"]
 visible = false

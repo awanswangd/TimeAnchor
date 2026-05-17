@@ -9,7 +9,7 @@ radius = 128.004
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5x01l"]
 
-[node name="timeanchor" type="StaticBody2D"]
+[node name="timeanchor" type="StaticBody2D" groups=["enemy"]]
 position = Vector2(300, 200)
 script = ExtResource("1_h5wji")
 radius = 5
