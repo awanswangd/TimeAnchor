@@ -31,5 +31,18 @@ texture = ExtResource("2_6omjd")
 position = Vector2(0, -1)
 shape = SubResource("RectangleShape2D_5x01l")
 
+[node name="ExplosionParticles" type="CPUParticles2D" parent="."]
+emitting = false
+amount = 80
+one_shot = true
+explosiveness = 1.0
+spread = 180.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 150.0
+initial_velocity_max = 300.0
+scale_amount_min = 2.0
+scale_amount_max = 5.0
+color = Color(0.541176, 0, 0.768627, 1)
+
 [connection signal="body_entered" from="AuraArea" to="." method="_on_aura_area_body_entered"]
 [connection signal="body_exited" from="AuraArea" to="." method="_on_aura_area_body_exited"]

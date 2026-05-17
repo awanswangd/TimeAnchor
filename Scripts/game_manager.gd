@@ -6,7 +6,7 @@ extends Node
 var current_timer: float = 0.0
 var is_warp_phase: bool = false
 var ui_manager: CanvasLayer
-
+var dialog_scene = preload("res://Scene/DialogOverlay.tscn")
 var tentacle_scene = preload("res://Scene/Tentacle.tscn") 
 var tentacles_left: int = 0
 
@@ -16,6 +16,14 @@ func _ready() -> void:
 		ui_manager.hide_warp_timer()
 		
 	current_timer = survival_duration
+	if dialog_scene != null:
+		var dialog_instance = dialog_scene.instantiate()
+		dialog_instance.dialog_queue = [
+			"Sistem|Peringatan: Integritas lambung kapal menurun kritis.",
+			"Kapten|Sial! Kita terjebak di anomali waktu. Aku harus menggunakan Time Anchor!",
+			"Kapten|Kumpulkan energi untuk menyalakan mesin Warp sebelum terlambat!"
+		]
+		get_parent().add_child.call_deferred(dialog_instance)
 
 func _process(delta: float) -> void:
 	if ui_manager == null: return

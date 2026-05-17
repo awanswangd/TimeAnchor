@@ -1,0 +1,35 @@
+[gd_scene load_steps=2 format=3 uid="uid://bmsbefvxxnbrl"]
+
+[ext_resource type="Script" uid="uid://x6aw3qic2ta3" path="res://scripts/dialog_overlay.gd" id="1_g4vja"]
+
+[node name="DialogOverlay" type="CanvasLayer"]
+process_mode = 3
+script = ExtResource("1_g4vja")
+
+[node name="DialogBox" type="Panel" parent="."]
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -153.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="NameLabel" type="Label" parent="DialogBox"]
+layout_mode = 1
+offset_right = 47.0
+offset_bottom = 23.0
+text = "Nama"
+
+[node name="TextLabel" type="Label" parent="DialogBox"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -120.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "Lorem Ipsum Dolor Sit Amet
+"
+autowrap_mode = 2

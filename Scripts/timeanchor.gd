@@ -2,8 +2,7 @@ extends StaticBody2D
 
 @export var radius: int = 2 
 @export var floor_id: int = 0 
-@export var floor_atlas_coords: Vector2i = Vector2i(0, 0) # Tambahan untuk koordinat atlas
-
+@export var floor_atlas_coords: Vector2i = Vector2i(0, 0) 
 var is_player_inside: bool = false
 var tile_size: float = 64.0 
 @onready var aura_visual: Sprite2D = $AuraArea/AuraVisual
@@ -38,11 +37,17 @@ func setup_aura_visual_size() -> void:
 
 func detonate() -> void:
 	print("BOOM! Time Anchor Meledak!")
+	var cam = get_tree().get_first_node_in_group("camera")
+	if cam != null and cam.has_method("apply_shake"):
+		cam.apply_shake(15.0)
+		
 	var ui = get_tree().get_first_node_in_group("ui_manager")
 	if ui != null and ui.has_method("add_detonation"):
 		ui.add_detonation()
+		
 	var area = $AuraArea 
 	if area == null: return
+	
 	var overlapping_bodies = area.get_overlapping_bodies()
 	print("Benda yang kena ledakan: ", overlapping_bodies)
 	for body in overlapping_bodies:
@@ -51,6 +56,14 @@ func detonate() -> void:
 			body.die() # Musuh mati (dan ngedrop bensin lagi!)
 		else:
 				print("ERROR: Musuh ini GA PUNYA fungsi die!")
+		area.monitoring = false 
+	if aura_visual != null:
+		aura_visual.hide()
+	$Sprite2D.hide() 
+	var particles = get_node_or_null("ExplosionParticles")
+	if particles != null:
+		particles.emitting = true
+	await get_tree().create_timer(1.0).timeout
 	queue_free()
 
 func restore_surrounding_tiles() -> void:

@@ -27,5 +27,19 @@ func spawn_enemy() -> void:
 	var spawn_direction = Vector2.RIGHT.rotated(random_angle)
 	var spawn_position = player.global_position + (spawn_direction * spawn_radius)
 	
+	var arena = get_tree().get_first_node_in_group("arena")
+	if arena != null:
+		var used_rect = arena.get_used_rect()
+		
+		var tile_size = 64.0 
+		var padding = 2.0 #Jarak aman biar musuh ga kejepit persis di dalam tembok
+		
+		var batas_kiri = (used_rect.position.x + padding) * tile_size
+		var batas_kanan = (used_rect.end.x - padding) * tile_size
+		var batas_atas = (used_rect.position.y + padding) * tile_size
+		var batas_bawah = (used_rect.end.y - padding) * tile_size
+		spawn_position.x = clamp(spawn_position.x, batas_kiri, batas_kanan)
+		spawn_position.y = clamp(spawn_position.y, batas_atas, batas_bawah)
+
 	enemy.global_position = spawn_position
-	add_child(enemy)
+	get_parent().add_child(enemy)
