@@ -1,0 +1,49 @@
+[gd_scene load_steps=3 format=3 uid="uid://kq33rjky8c81"]
+
+[ext_resource type="Script" uid="uid://b56trwipjra6j" path="res://scripts/skill_ui.gd" id="1_7irep"]
+[ext_resource type="Texture2D" uid="uid://jwwvvdv83vdr" path="res://Assets/icon.svg" id="2_kkg6v"]
+
+[node name="SkillUI" type="MarginContainer" groups=["skill_ui"]]
+texture_filter = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_left = 80.0
+offset_top = 459.0
+offset_right = 340.0
+offset_bottom = -34.0
+grow_vertical = 2
+script = ExtResource("1_7irep")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="AnchorBox" type="VBoxContainer" parent="HBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="HBoxContainer/AnchorBox"]
+layout_mode = 2
+text = "Left Click"
+horizontal_alignment = 1
+
+[node name="AnchorBar" type="TextureProgressBar" parent="HBoxContainer/AnchorBox"]
+layout_mode = 2
+fill_mode = 3
+texture_under = ExtResource("2_kkg6v")
+texture_progress = ExtResource("2_kkg6v")
+tint_progress = Color(0, 0, 0, 0.862745)
+
+[node name="DashBox" type="VBoxContainer" parent="HBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="HBoxContainer/DashBox"]
+layout_mode = 2
+text = "Double Tap"
+horizontal_alignment = 1
+
+[node name="DashBar" type="TextureProgressBar" parent="HBoxContainer/DashBox"]
+layout_mode = 2
+fill_mode = 3
+texture_under = ExtResource("2_kkg6v")
+texture_progress = ExtResource("2_kkg6v")
+tint_progress = Color(0, 0, 0, 0.862745)

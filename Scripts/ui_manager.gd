@@ -9,6 +9,7 @@ extends CanvasLayer
 @onready var you_win_panel: Panel = $WinningPanel
 func _ready() -> void:
 	restart_button.pressed.connect(restart_game)
+	exit_button.pressed.connect(exit_game)
 	
 	var player = get_tree().get_first_node_in_group("player")
 	if player != null:
@@ -57,3 +58,6 @@ func update_warp_timer(waktu: float) -> void:
 func restart_game() -> void:
 	get_tree().paused = false 
 	get_tree().reload_current_scene() 
+
+func exit_game() -> void:
+	get_tree().quit()

@@ -15,6 +15,8 @@ var current_energy: int
 @export var dash_duration: float = 0.2 # Lama dash berlangsung (sangat singkat)
 @export var dash_cooldown_time: float = 2.5 # Jeda antar dash
 @export var dash_energy_cost: int = 1 # Biaya bensin untuk 1x dash
+@export var anchor_cooldown_time: float = 3.0 #Durasi cooldown anchor
+var anchor_current_cooldown: float = 0.0 #Waktu cooldown yang sedang berjalan
 var is_dashing: bool = false
 var dash_direction: Vector2 = Vector2.ZERO
 var dash_timer: float = 0.0
@@ -40,13 +42,14 @@ func _ready() -> void:
 	energy_changed.emit(current_energy)
 
 func _physics_process(delta: float) -> void:
-	check_double_tap(delta) # Cek input dash dulu
+	if anchor_current_cooldown > 0:
+		anchor_current_cooldown -= delta
+	check_double_tap(delta)
 	handle_movement(delta)
 	if not is_dashing:
 		check_void_damage(delta) # Cek void hanya saat tidak sedang dash
 
 func _unhandled_input(event: InputEvent) -> void:
-	# Mendengarkan tombol yang ditekan (Spasi / Klik yang sudah diset di Input Map)
 	if event.is_action_pressed("place_anchor"):
 		try_place_anchor()
 
@@ -61,11 +64,11 @@ func handle_movement(delta: float) -> void:
 			var collision = get_slide_collision(i)
 			var collider = collision.get_collider()
 			if collider != null and collider.is_in_group("enemy"):
+				if collider.is_in_group("boss"):
+					continue
 				print("DASH-KILL SUCCESS!")
-				if collider != null and collider.is_in_group("enemy"):
-					print("DASH-KILL SUCCESS!")
-					if collider.has_method("die"):
-						collider.die()
+				if collider.has_method("die"):
+					collider.die()
 		if dash_timer <= 0:
 			is_dashing = false 
 			
@@ -118,22 +121,28 @@ func start_dash() -> void:
 	# Jaga-jaga kalau input vector entah kenapa 0
 	if dash_direction == Vector2.ZERO:
 		dash_direction = Vector2.RIGHT 
-		
+	
 	dash_timer = dash_duration
 	current_cooldown = dash_cooldown_time
+	
+	var skill_ui = get_tree().get_first_node_in_group("skill_ui")
+	if skill_ui != null and skill_ui.has_method("start_dash_cooldown"):
+		skill_ui.start_dash_cooldown()
 	
 	current_energy -= dash_energy_cost
 	energy_changed.emit(current_energy)
 
 func try_place_anchor() -> void:
 	print("Mencoba menanam Anchor...")
-	
-	# Cek Tersangka 1: Apakah Scene Anchor sudah dimasukkan?
+	#Cek 1
+	if anchor_current_cooldown > 0:
+		print("GAGAL: Anchor masih cooldown! Sisa waktu: ", anchor_current_cooldown)
+		return
+	# Cek 2
 	if time_anchor_scene == null:
 		print("GAGAL: time_anchor_scene masih KOSONG di Inspector Player!")
 		return
-		
-	# Cek Tersangka 2: Apakah energi cukup?
+	#Cek 3
 	if current_energy < anchor_cost:
 		print("GAGAL: Energi habis! Sisa energi: ", current_energy)
 		return
@@ -141,18 +150,25 @@ func try_place_anchor() -> void:
 	print("SUKSES: Syarat terpenuhi, Anchor muncul!")
 	
 	current_energy -= anchor_cost
+	anchor_current_cooldown = anchor_cooldown_time
 	energy_changed.emit(current_energy)
 	
 	var anchor = time_anchor_scene.instantiate()
 	anchor.global_position = global_position
 	get_tree().current_scene.add_child(anchor)
 	anchor_placed.emit(global_position)
-		
+	
+	var skill_ui = get_tree().get_first_node_in_group("skill_ui")
+	if skill_ui != null and skill_ui.has_method("start_anchor_cooldown"):
+		skill_ui.start_anchor_cooldown()
 
 func take_damage(amount: int) -> void:
 	current_health -= amount
 	health_changed.emit(current_health)
-	
+	var cam = get_tree().get_first_node_in_group("camera")
+	if cam != null and cam.has_method("apply_shake"):
+		cam.apply_shake(3.5)
+		
 	# Efek visual sederhana saat terkena damage (opsional)
 	modulate = Color.RED
 	await get_tree().create_timer(0.1).timeout
@@ -160,7 +176,6 @@ func take_damage(amount: int) -> void:
 	
 	if current_health <= 0:
 		die()
-		
 
 func die() -> void:
 	player_died.emit()
