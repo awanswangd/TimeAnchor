@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://sv74hr4uh2vf"
-path="res://.godot/imported/Tentakel Hitam-Sheet.png-6c2c28162fa7addced33d9ea328e9ca2.ctex"
+uid="uid://colvia5ur1q17"
+path="res://.godot/imported/Sprite_Tentakel_Baru.png-944b7fdd86ef672889fecb97da1ebe8b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Tentakel Hitam-Sheet.png"
-dest_files=["res://.godot/imported/Tentakel Hitam-Sheet.png-6c2c28162fa7addced33d9ea328e9ca2.ctex"]
+source_file="res://Assets/Sprite_Tentakel_Baru.png"
+dest_files=["res://.godot/imported/Sprite_Tentakel_Baru.png-944b7fdd86ef672889fecb97da1ebe8b.ctex"]
 
 [params]
 

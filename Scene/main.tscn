@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=4 uid="uid://cwnnimadu5oey"]
+[gd_scene load_steps=15 format=4 uid="uid://cwnnimadu5oey"]
 
 [ext_resource type="Texture2D" uid="uid://dwdpmdn22ala1" path="res://Assets/placeholder_tile.png" id="1_sblpm"]
 [ext_resource type="Texture2D" uid="uid://bvd56qsavh2od" path="res://Assets/Wall.png" id="2_ow1sv"]
@@ -7,8 +7,10 @@
 [ext_resource type="PackedScene" uid="uid://cpn2jl5qoe57h" path="res://Scene/timeanchor.tscn" id="4_2wwxx"]
 [ext_resource type="Script" uid="uid://dx5tuvp2ugmt1" path="res://Scripts/enemy_spawner.gd" id="6_1xcnr"]
 [ext_resource type="Script" uid="uid://ccquy3ffukec5" path="res://Scripts/ui_manager.gd" id="6_ow1sv"]
-[ext_resource type="Script" uid="uid://c31nxo4fgt5n2" path="res://scripts/game_manager.gd" id="7_ow1sv"]
+[ext_resource type="Script" uid="uid://c31nxo4fgt5n2" path="res://Scripts/game_manager.gd" id="7_ow1sv"]
+[ext_resource type="PackedScene" uid="uid://bbcxsqq6pge3p" path="res://Scene/HealthBar.tscn" id="9_3pt4j"]
 [ext_resource type="PackedScene" uid="uid://kq33rjky8c81" path="res://Scene/SkillUI.tscn" id="9_c2iwn"]
+[ext_resource type="PackedScene" uid="uid://ddysq8c7hxaty" path="res://Scene/EnergyBar.tscn" id="10_7y4ci"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_2wwxx"]
 texture = ExtResource("1_sblpm")
@@ -39,9 +41,9 @@ arena_tilemap = NodePath("../TileMapLayer")
 
 [node name="Player" parent="." node_paths=PackedStringArray("arena_tilemap") instance=ExtResource("2_r34rm")]
 position = Vector2(32, 32)
-starting_energy = 10
 time_anchor_scene = ExtResource("4_2wwxx")
 arena_tilemap = NodePath("../TileMapLayer")
+starting_energy = 10
 
 [node name="Timer" type="Timer" parent="."]
 
@@ -52,29 +54,85 @@ script = ExtResource("6_1xcnr")
 script = ExtResource("7_ow1sv")
 survival_duration = 3.0
 
-[node name="UIManager" type="CanvasLayer" parent="."]
+[node name="UIManager" type="CanvasLayer" parent="." groups=["ui_mannager"]]
 process_mode = 3
 script = ExtResource("6_ow1sv")
 
-[node name="HealthLabel" type="Label" parent="UIManager"]
-offset_right = 40.0
-offset_bottom = 23.0
-text = "Health: xxx"
+[node name="GameplayHUD" type="Control" parent="UIManager"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+metadata/_edit_use_anchors_ = true
 
-[node name="EnergyLabel" type="Label" parent="UIManager"]
-offset_top = 32.0
-offset_right = 88.0
-offset_bottom = 55.0
+[node name="HealthBar" parent="UIManager/GameplayHUD" groups=["health_bar"] instance=ExtResource("9_3pt4j")]
+layout_mode = 1
+anchors_preset = -1
+anchor_bottom = 0.0154321
+offset_left = 8.0
+offset_top = 10.0
+offset_right = 248.0
+offset_bottom = 14.0
+metadata/_edit_use_anchors_ = true
+
+[node name="HealthLabel" type="Label" parent="UIManager/GameplayHUD/HealthBar"]
+texture_filter = 1
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.428571
+anchor_right = 0.5
+anchor_bottom = 0.428571
+offset_left = -43.5
+offset_top = -11.5
+offset_right = 43.5
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 15
+text = "Health: xxx"
+metadata/_edit_use_anchors_ = true
+
+[node name="EnergyBar" parent="UIManager/GameplayHUD" groups=["energy_bar"] instance=ExtResource("10_7y4ci")]
+layout_mode = 1
+anchors_preset = -1
+anchor_bottom = 0.0138889
+offset_left = 8.0
+offset_top = 40.0
+offset_right = 248.0
+offset_bottom = 44.0
+metadata/_edit_use_anchors_ = true
+
+[node name="EnergyLabel" type="Label" parent="UIManager/GameplayHUD/EnergyBar"]
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -44.0
+offset_top = -12.5
+offset_right = 44.0
+offset_bottom = 10.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 15
 text = "Energy: xxx"
 
-[node name="Sprint_Button_Prompt" type="Label" parent="UIManager"]
-offset_left = 8.0
-offset_top = 72.0
-offset_right = 55.0
-offset_bottom = 95.0
-text = "Sprint"
+[node name="SkillUI" parent="UIManager/GameplayHUD" instance=ExtResource("9_c2iwn")]
+layout_mode = 1
+offset_right = 356.0
 
-[node name="WarpTimerLabel" type="Label" parent="UIManager"]
+[node name="WarpTimerLabel" type="Label" parent="UIManager/GameplayHUD"]
+layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
@@ -85,6 +143,13 @@ offset_bottom = 58.0
 grow_horizontal = 2
 theme_override_font_sizes/font_size = 24
 text = "Warp: 60"
+
+[node name="Sprint_Button_Prompt" type="Label" parent="UIManager/GameplayHUD"]
+offset_left = 8.0
+offset_top = 72.0
+offset_right = 55.0
+offset_bottom = 95.0
+text = "Sprint"
 
 [node name="GameOverPanel" type="Panel" parent="UIManager"]
 visible = false
@@ -112,7 +177,7 @@ offset_bottom = 11.5
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_font_sizes/font_size = 32
-text = "Game Over"
+text = "SYSTEM FAILURE. WARP GAGAL."
 
 [node name="HBoxContainer" type="HBoxContainer" parent="UIManager/GameOverPanel"]
 layout_mode = 1
@@ -127,17 +192,17 @@ offset_right = 53.0
 offset_bottom = 68.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 20
+theme_override_constants/separation = 34
 
 [node name="RestartButton" type="Button" parent="UIManager/GameOverPanel/HBoxContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
-text = "Restart"
+text = "RESTART MISSION"
 
-[node name="ExitButton" type="Button" parent="UIManager/GameOverPanel/HBoxContainer"]
+[node name="MenuButton" type="Button" parent="UIManager/GameOverPanel/HBoxContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
-text = "Exit"
+text = "RETURN TO MENU"
 
 [node name="WinningPanel" type="Panel" parent="UIManager"]
 visible = false
@@ -178,5 +243,3 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_font_sizes/font_size = 32
 text = "Objective Text"
-
-[node name="SkillUI" parent="UIManager" instance=ExtResource("9_c2iwn")]

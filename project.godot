@@ -15,9 +15,14 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 [application]
 
 config/name="TimeAch"
-run/main_scene="uid://cwnnimadu5oey"
+run/main_scene="uid://bur8sbp3qbgql"
 config/features=PackedStringArray("4.4", "Forward Plus")
 config/icon="res://Assets/icon.svg"
+
+[autoload]
+
+Transition="*res://Scene/transition_manager.tscn"
+Global="*res://Scripts/global.gd"
 
 [display]
 
@@ -28,6 +33,9 @@ window/stretch/mode="canvas_items"
 
 enemy=""
 skill_ui=""
+health_bar=""
+energy_bar=""
+ui_mannager=""
 
 [input]
 

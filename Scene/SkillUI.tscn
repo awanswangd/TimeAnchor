@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://kq33rjky8c81"]
 
-[ext_resource type="Script" uid="uid://b56trwipjra6j" path="res://scripts/skill_ui.gd" id="1_7irep"]
+[ext_resource type="Script" uid="uid://b56trwipjra6j" path="res://Scripts/skill_ui.gd" id="1_7irep"]
 [ext_resource type="Texture2D" uid="uid://jwwvvdv83vdr" path="res://Assets/icon.svg" id="2_kkg6v"]
 
 [node name="SkillUI" type="MarginContainer" groups=["skill_ui"]]

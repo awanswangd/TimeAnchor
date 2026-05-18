@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://bmsbefvxxnbrl"]
 
-[ext_resource type="Script" uid="uid://x6aw3qic2ta3" path="res://scripts/dialog_overlay.gd" id="1_g4vja"]
+[ext_resource type="Script" uid="uid://x6aw3qic2ta3" path="res://Scripts/dialog_overlay.gd" id="1_g4vja"]
 
 [node name="DialogOverlay" type="CanvasLayer"]
 process_mode = 3

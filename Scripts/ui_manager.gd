@@ -1,12 +1,16 @@
 extends CanvasLayer
-
-@onready var health_label: Label = $HealthLabel
-@onready var energy_label: Label = $EnergyLabel
+@onready var gameplay_hud: Control = $GameplayHUD
+@onready var health_label: Label = $GameplayHUD/HealthBar/HealthLabel
+@onready var energy_label: Label = $GameplayHUD/EnergyBar/EnergyLabel
 @onready var game_over_panel: Panel = $GameOverPanel
 @onready var restart_button: Button = $GameOverPanel/HBoxContainer/RestartButton
-@onready var exit_button: Button = $GameOverPanel/HBoxContainer/ExitButton
-@onready var warp_timer_label: Label = $WarpTimerLabel
+@onready var exit_button: Button = $GameOverPanel/HBoxContainer/MenuButton
+@onready var warp_timer_label: Label = $GameplayHUD/WarpTimerLabel
 @onready var you_win_panel: Panel = $WinningPanel
+@onready var health_bar: ProgressBar = $GameplayHUD/HealthBar
+@onready var energy_bar: ProgressBar = $GameplayHUD/EnergyBar
+
+
 func _ready() -> void:
 	restart_button.pressed.connect(restart_game)
 	exit_button.pressed.connect(exit_game)
@@ -21,16 +25,20 @@ func _ready() -> void:
 		update_energy(player.current_energy)
 
 func update_health(new_health: int) -> void:
-	health_label.text = "HP: " + str(new_health)
+	if is_instance_valid(health_label):
+		health_label.text = "HP: " + str(new_health)
 
 func update_energy(new_energy: int) -> void:
 	energy_label.text = "Energi: " + str(new_energy)
 
 func show_game_over() -> void:
-	game_over_panel.show() 
+	hide_hud()
+	if game_over_panel != null:
+		game_over_panel.show()
 	get_tree().paused = true
 
 func show_win() -> void:
+	hide_hud()
 	if you_win_panel != null:
 		you_win_panel.show()
 	get_tree().paused = true 
@@ -57,7 +65,15 @@ func update_warp_timer(waktu: float) -> void:
 
 func restart_game() -> void:
 	get_tree().paused = false 
-	get_tree().reload_current_scene() 
+	Transition.change_scene("res://Scene/main.tscn") 
 
 func exit_game() -> void:
-	get_tree().quit()
+	Transition.change_scene("res://Scene/main_menu.tscn")
+
+func hide_hud() -> void:
+	if gameplay_hud != null:
+		gameplay_hud.hide()
+		
+func show_hud() -> void:
+	if gameplay_hud != null:
+		gameplay_hud.show()
