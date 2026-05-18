@@ -7,7 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://cpn2jl5qoe57h" path="res://Scene/timeanchor.tscn" id="4_2wwxx"]
 [ext_resource type="Script" uid="uid://dx5tuvp2ugmt1" path="res://Scripts/enemy_spawner.gd" id="6_1xcnr"]
 [ext_resource type="Script" uid="uid://ccquy3ffukec5" path="res://Scripts/ui_manager.gd" id="6_ow1sv"]
-[ext_resource type="Script" uid="uid://c31nxo4fgt5n2" path="res://scripts/game_manager.gd" id="7_ow1sv"]
+[ext_resource type="Script" uid="uid://c31nxo4fgt5n2" path="res://Scripts/game_manager.gd" id="7_ow1sv"]
 [ext_resource type="PackedScene" uid="uid://kq33rjky8c81" path="res://Scene/SkillUI.tscn" id="9_c2iwn"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_2wwxx"]
@@ -112,7 +112,7 @@ offset_bottom = 11.5
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_font_sizes/font_size = 32
-text = "Game Over"
+text = "SYSTEM FAILURE. WARP GAGAL."
 
 [node name="HBoxContainer" type="HBoxContainer" parent="UIManager/GameOverPanel"]
 layout_mode = 1
@@ -127,17 +127,17 @@ offset_right = 53.0
 offset_bottom = 68.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 20
+theme_override_constants/separation = 34
 
 [node name="RestartButton" type="Button" parent="UIManager/GameOverPanel/HBoxContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
-text = "Restart"
+text = "RESTART MISSION"
 
-[node name="ExitButton" type="Button" parent="UIManager/GameOverPanel/HBoxContainer"]
+[node name="MenuButton" type="Button" parent="UIManager/GameOverPanel/HBoxContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
-text = "Exit"
+text = "RETURN TO MENU"
 
 [node name="WinningPanel" type="Panel" parent="UIManager"]
 visible = false

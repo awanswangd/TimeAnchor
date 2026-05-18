@@ -152,7 +152,9 @@ func try_place_anchor() -> void:
 	current_energy -= anchor_cost
 	anchor_current_cooldown = anchor_cooldown_time
 	energy_changed.emit(current_energy)
-	
+	var cam = get_tree().get_first_node_in_group("camera")
+	if cam != null and cam.has_method("apply_shake"):
+		cam.apply_shake(4.5)
 	var anchor = time_anchor_scene.instantiate()
 	anchor.global_position = global_position
 	get_tree().current_scene.add_child(anchor)
@@ -182,6 +184,9 @@ func die() -> void:
 	hide() 
 	set_physics_process(false)
 	set_process_unhandled_input(false)
+	var ui = get_tree().get_first_node_in_group("ui_manager")
+	if ui != null and ui.has_method("show_game_over"):
+		ui.show_game_over()
 
 func check_void_damage(delta: float) -> void:
 	if arena_tilemap == null:
