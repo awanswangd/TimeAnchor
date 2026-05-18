@@ -22,6 +22,7 @@ config/icon="res://Assets/icon.svg"
 [autoload]
 
 Transition="*res://Scene/transition_manager.tscn"
+Global="*res://Scripts/global.gd"
 
 [display]
 
@@ -32,6 +33,9 @@ window/stretch/mode="canvas_items"
 
 enemy=""
 skill_ui=""
+health_bar=""
+energy_bar=""
+ui_mannager=""
 
 [input]
 

@@ -14,16 +14,11 @@ func _ready() -> void:
 	ui_manager = get_parent().get_node("UIManager")
 	if ui_manager != null and ui_manager.has_method("hide_warp_timer"):
 		ui_manager.hide_warp_timer()
-		
+	if not Global.is_tutorial_done:
+		mulai_monolog_tutorial()
+	else:
+		print("Tutorial di-skip, langsung gelut!")
 	current_timer = survival_duration
-	if dialog_scene != null:
-		var dialog_instance = dialog_scene.instantiate()
-		dialog_instance.dialog_queue = [
-			"Sistem|Peringatan: Integritas lambung kapal menurun kritis.",
-			"Kapten|Sial! Kita terjebak di anomali waktu. Aku harus menggunakan Time Anchor!",
-			"Kapten|Kumpulkan energi untuk menyalakan mesin Warp sebelum terlambat!"
-		]
-		get_parent().add_child.call_deferred(dialog_instance)
 
 func _process(delta: float) -> void:
 	if ui_manager == null: return
@@ -100,3 +95,16 @@ func trigger_you_win() -> void:
 	if ui_manager.has_method("show_win"): 
 		ui_manager.show_win()
 		set_process(false)
+
+func mulai_monolog_tutorial() -> void:
+	if dialog_scene != null:
+		var dialog_instance = dialog_scene.instantiate()
+		
+		dialog_instance.dialog_queue = [
+			"Kapten|Sialan! Lambung kapal mulai runtuh ditarik anomali waktu!",
+			"Kapten|Aku harus bergerak pakai (W, A, S, D) dan pakai energi buat Dash (Double Tap).",
+			"Kapten|Kalau ada lantai berlubang, aku bisa menambalnya dengan Time Anchor (Klik Kiri)...",
+			"Kapten|Tapi hati-hati, Anchor itu bakal meledak! Aku harus bertahan hidup!"
+		]
+		get_parent().add_child.call_deferred(dialog_instance)
+		Global.is_tutorial_done = true

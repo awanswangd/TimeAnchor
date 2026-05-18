@@ -8,6 +8,9 @@ var dialog_queue: Array = []
 
 func _ready() -> void:
 	get_tree().paused = true
+	var ui = get_tree().get_first_node_in_group("ui_manager")
+	if ui != null and ui.has_method("hide_hud"):
+		ui.hide_hud()
 	next_dialog_line()
 
 func next_dialog_line() -> void:
@@ -27,6 +30,9 @@ func next_dialog_line() -> void:
 func end_dialog() -> void:
 	$DialogBox.hide()
 	await get_tree().create_timer(0.1).timeout
+	var ui = get_tree().get_first_node_in_group("ui_manager")
+	if ui != null and ui.has_method("show_hud"):
+		ui.show_hud()
 	get_tree().paused = false
 	queue_free()
 

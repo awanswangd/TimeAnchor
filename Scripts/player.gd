@@ -1,43 +1,66 @@
 extends CharacterBody2D
 
-@export var speed: float = 200.0
-@export var max_health: int = 100
-@export var starting_energy: int = 100
-@export var anchor_cost: int = 1
+#SIGNALS & PRELOADS
+signal health_changed(new_health: int)
+signal energy_changed(new_energy: int)
+signal anchor_placed(position: Vector2)
+signal player_died
+
+var energy_drop_scene = preload("res://Scene/EnergyDrop.tscn")
+
+#REFERENCES
+@export_category("References")
 @export var time_anchor_scene: PackedScene 
 @export var arena_tilemap: TileMapLayer
-var void_damage_timer: float = 0.0
-var void_damage_interval: float = 0.5
-var sprint_tick_timer: float = 0.0
+
+#PLAYER STATS
+@export_category("Player Stats")
+@export var max_health: int = 100
+@export var starting_energy: int = 100
+@export var speed: float = 200.0
+
 var current_health: int
 var current_energy: int
-@export var dash_speed_multiplier: float = 3.5 # Seberapa cepat melesat saat dash
-@export var dash_duration: float = 0.2 # Lama dash berlangsung (sangat singkat)
-@export var dash_cooldown_time: float = 2.5 # Jeda antar dash
-@export var dash_energy_cost: int = 1 # Biaya bensin untuk 1x dash
-@export var anchor_cooldown_time: float = 3.0 #Durasi cooldown anchor
-var anchor_current_cooldown: float = 0.0 #Waktu cooldown yang sedang berjalan
+var sprint_tick_timer: float = 0.0
+
+#DASH SYSTEM
+@export_group("Dash Settings")
+@export var dash_speed_multiplier: float = 3.5 
+@export var dash_duration: float = 0.2 
+@export var dash_cooldown_time: float = 2.5 
+@export var dash_energy_cost: int = 1 
+
 var is_dashing: bool = false
 var dash_direction: Vector2 = Vector2.ZERO
 var dash_timer: float = 0.0
 var current_cooldown: float = 0.0
-var last_key_pressed: String = ""
+var double_tap_window: float = 0.25
 var double_tap_timer: float = 0.0
-var double_tap_window: float = 0.25 # Waktu maksimal untuk tap kedua
+var last_key_pressed: String = ""
 
-signal health_changed(new_health)
-signal energy_changed(new_energy)
-signal anchor_placed(position)
-signal player_died
-var energy_drop_scene = preload("res://Scene/EnergyDrop.tscn")
+#TIME ANCHOR
+@export_group("Anchor Settings")
+@export var anchor_cost: int = 1
+@export var anchor_cooldown_time: float = 3.0 
+var anchor_current_cooldown: float = 0.0 
+
+#ENVIRONMENT (VOID DAMAGE)
+var void_damage_interval: float = 0.5
+var void_damage_timer: float = 0.0
 
 func _ready() -> void:
-	# Inisialisasi status awal
 	add_to_group("player") 
 	current_health = max_health
 	current_energy = starting_energy
 	
-	# Pancarkan signal awal agar UI bisa melakukan render angka yang tepat
+	var hb = get_tree().get_first_node_in_group("health_bar")
+	if hb != null and hb.has_method("init_health"):
+		hb.call_deferred("init_health", max_health)
+	
+	var eb = get_tree().get_first_node_in_group("energy_bar")
+	if eb != null and eb.has_method("init_energy"):
+		eb.call_deferred("init_energy", starting_energy)
+	
 	health_changed.emit(current_health)
 	energy_changed.emit(current_energy)
 
@@ -47,7 +70,7 @@ func _physics_process(delta: float) -> void:
 	check_double_tap(delta)
 	handle_movement(delta)
 	if not is_dashing:
-		check_void_damage(delta) # Cek void hanya saat tidak sedang dash
+		check_void_damage(delta)
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("place_anchor"):
@@ -59,14 +82,12 @@ func handle_movement(delta: float) -> void:
 		velocity = dash_direction * (speed * dash_speed_multiplier)
 		move_and_slide()
 		
-		# Deteksi tabrak mati
 		for i in get_slide_collision_count():
 			var collision = get_slide_collision(i)
 			var collider = collision.get_collider()
 			if collider != null and collider.is_in_group("enemy"):
 				if collider.is_in_group("boss"):
 					continue
-				print("DASH-KILL SUCCESS!")
 				if collider.has_method("die"):
 					collider.die()
 		if dash_timer <= 0:
@@ -77,8 +98,7 @@ func handle_movement(delta: float) -> void:
 		var current_speed = speed 
 		
 		if Input.is_action_pressed("sprint") and current_energy > 0 and input_dir != Vector2.ZERO:
-			# Player pakai SHIFT
-			current_speed = speed * 1.6 # Dibuat sedikit lebih lambat dari Dash biar terasa bedanya
+			current_speed = speed * 1.6 
 			sprint_tick_timer += delta
 			
 			if sprint_tick_timer >= 0.2:
@@ -131,27 +151,27 @@ func start_dash() -> void:
 	
 	current_energy -= dash_energy_cost
 	energy_changed.emit(current_energy)
+	var eb = get_tree().get_first_node_in_group("energy_bar")
+	if eb != null:
+		eb.set_deferred("energy", current_energy)
 
 func try_place_anchor() -> void:
-	print("Mencoba menanam Anchor...")
 	#Cek 1
 	if anchor_current_cooldown > 0:
-		print("GAGAL: Anchor masih cooldown! Sisa waktu: ", anchor_current_cooldown)
 		return
-	# Cek 2
+	#Cek 2
 	if time_anchor_scene == null:
-		print("GAGAL: time_anchor_scene masih KOSONG di Inspector Player!")
 		return
 	#Cek 3
 	if current_energy < anchor_cost:
-		print("GAGAL: Energi habis! Sisa energi: ", current_energy)
 		return
 		
-	print("SUKSES: Syarat terpenuhi, Anchor muncul!")
-	
 	current_energy -= anchor_cost
 	anchor_current_cooldown = anchor_cooldown_time
 	energy_changed.emit(current_energy)
+	var eb = get_tree().get_first_node_in_group("energy_bar")
+	if eb != null:
+		eb.set_deferred("energy", current_energy)
 	var cam = get_tree().get_first_node_in_group("camera")
 	if cam != null and cam.has_method("apply_shake"):
 		cam.apply_shake(4.5)
@@ -165,19 +185,24 @@ func try_place_anchor() -> void:
 		skill_ui.start_anchor_cooldown()
 
 func take_damage(amount: int) -> void:
+	if current_health <= 0:
+		return
 	current_health -= amount
 	health_changed.emit(current_health)
 	var cam = get_tree().get_first_node_in_group("camera")
 	if cam != null and cam.has_method("apply_shake"):
 		cam.apply_shake(3.5)
-		
-	# Efek visual sederhana saat terkena damage (opsional)
+	var hb = get_tree().get_first_node_in_group("health_bar")
+	if hb != null:
+		hb.set_deferred("health", current_health)
+
 	modulate = Color.RED
 	await get_tree().create_timer(0.1).timeout
 	modulate = Color.WHITE
 	
 	if current_health <= 0:
 		die()
+
 
 func die() -> void:
 	player_died.emit()
