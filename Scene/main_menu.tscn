@@ -91,7 +91,8 @@ script = ExtResource("1_ftydy")
 position = Vector2(576, 408)
 scale = Vector2(0.725, 0.725)
 sprite_frames = SubResource("SpriteFrames_ejkra")
-frame_progress = 0.223127
+frame = 4
+frame_progress = 0.645341
 metadata/_edit_use_anchors_ = true
 
 [node name="TitleLabel" type="Label" parent="."]

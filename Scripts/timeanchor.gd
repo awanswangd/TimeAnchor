@@ -84,5 +84,11 @@ func restore_surrounding_tiles() -> void:
 			var target_cell = center_grid_pos + Vector2i(x, y)
 			var current_id = tilemap.get_cell_source_id(target_cell)
 			
-			if current_id == -1 and grid_manager.is_original_floor(target_cell):
-				tilemap.set_cell(target_cell, floor_id, floor_atlas_coords)
+			if current_id == -1:
+				# Tanyakan gambar aslinya ke GridManager
+				var original_coords = grid_manager.get_original_floor_coords(target_cell)
+				
+				# Jika jawabannya bukan Vector2i(-1, -1), berarti area itu dulunya lantai
+				if original_coords != Vector2i(-1, -1):
+					# Kembalikan lantai menggunakan gambar spesifiknya!
+					tilemap.set_cell(target_cell, floor_id, original_coords)
