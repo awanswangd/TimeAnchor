@@ -9,6 +9,11 @@ var current_phase: Phase = Phase.ACT_1_TUTORIAL
 @export var survival_duration: float = 120 #2 Menit untuk Babak 2
 @export var warp_duration: float = 60 #Waktu nahan Black Hole di Babak 3
 
+@export_category("Audio")
+@export var bgm_act_1: AudioStream #Musik misterius/sepi
+@export var bgm_act_2: AudioStream #Musik panik/survival
+@export var bgm_act_3: AudioStream #Musik bos epik
+
 var current_timer: float = 0.0
 var tentacles_left: int = 0
 var is_tutorial_setup_done: bool = false 
@@ -60,6 +65,8 @@ func start_act_1() -> void:
 	
 	if not Global.is_tutorial_done:
 		mulai_monolog_tutorial()
+	if bgm_act_1 != null:
+		AudioManager.play_bgm(bgm_act_1)
 	is_game_active = true
 
 func process_act_1(_delta: float) -> void:
@@ -122,7 +129,6 @@ func process_act_2(delta: float) -> void:
 func start_act_3() -> void:
 	current_phase = Phase.ACT_3_BOSS
 	current_timer = warp_duration
-	print("🕳️ MEMASUKI BABAK 3: BLACK HOLE!")
 	
 	var player = get_tree().get_first_node_in_group("player")
 	if player != null and player.has_method("set_blackhole_active"):
@@ -146,10 +152,30 @@ func process_act_3(delta: float) -> void:
 		else:
 			trigger_game_over_warp_failed()
 
+func trigger_game_over_warp_failed() -> void:
+	set_process(false)
+	munculkan_dialog([
+		"Pilot|KAPTEN! Waktu habis! Integritas lambung 0%! Mesin warp mati!",
+		"System|CRITICAL ERROR. HULL BREACH DETECTED. WELCOME TO THE VOID."
+		])
+		
+	if ui_manager.has_method("show_game_over"):
+		ui_manager.show_game_over()
+		set_process(false) 
+
+func trigger_you_win() -> void:
+	set_process(false)
+	munculkan_dialog([
+		"Pilot|Luar biasa Kapten! Semua cengkeraman entitas kosmik itu sudah hancur!",
+		"Kapten|Jalur sudah bersih! Tarik tuasnya sekarang!!",
+		"Pilot|Warping in 3... 2... 1... KITA BERHASIL LOLOS!"
+	])
+	if ui_manager.has_method("show_win"): 
+		ui_manager.show_win()
+
 func spawn_tentacles() -> void:
 	var arena = get_tree().get_first_node_in_group("arena")
 	if arena == null:
-		print("Waduh, TileMapLayer 'arena' ga ketemu!")
 		return
 	var used_rect = arena.get_used_rect()
 	var padding = 2 
@@ -171,41 +197,15 @@ func spawn_tentacles() -> void:
 			tentacle.global_position = point
 			get_parent().add_child(tentacle)
 			tentacles_left += 1
-		else:
-			print("ERROR: tentacle_scene belum di-load di GameManager!")
 			
-	print("4 TENTAKEL KOSMIK MUNCUL")
 
 func tentacle_destroyed() -> void:
 	tentacles_left -= 1
-	print("Sisa Tentakel: ", tentacles_left)
 	
 	if tentacles_left <= 0:
-		print("JALUR WARP BERSIH! BERTAHANLAH SAMPAI WAKTU HABIS!")
 		if ui_manager != null and ui_manager.has_method("show_survival_objective"):
 			ui_manager.show_survival_objective()
 		
-func trigger_game_over_warp_failed() -> void:
-	set_process(false)
-	munculkan_dialog([
-		"Pilot|KAPTEN! Waktu habis! Integritas lambung 0%! Mesin warp mati!",
-		"System|CRITICAL ERROR. HULL BREACH DETECTED. WELCOME TO THE VOID."
-		])
-		
-	if ui_manager.has_method("show_game_over"):
-		ui_manager.show_game_over()
-		set_process(false) 
-
-func trigger_you_win() -> void:
-	print("SEMUA TENTAKEL HANCUR! WARP BERHASIL!")
-	set_process(false)
-	munculkan_dialog([
-		"Pilot|Luar biasa Kapten! Semua cengkeraman entitas kosmik itu sudah hancur!",
-		"Kapten|Jalur sudah bersih! Tarik tuasnya sekarang!!",
-		"Pilot|Warping in 3... 2... 1... KITA BERHASIL LOLOS!"
-	])
-	if ui_manager.has_method("show_win"): 
-		ui_manager.show_win()
 
 func munculkan_dialog(teks_array: Array) -> void:
 	if dialog_scene != null:

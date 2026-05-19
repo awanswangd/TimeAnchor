@@ -1,7 +1,8 @@
-[gd_scene load_steps=12 format=3 uid="uid://bur8sbp3qbgql"]
+[gd_scene load_steps=13 format=3 uid="uid://bur8sbp3qbgql"]
 
-[ext_resource type="Script" uid="uid://bp14rno1pri66" path="res://Scripts/main_menu.gd" id="1_ftydy"]
+[ext_resource type="Script" uid="uid://bp14rno1pri66" path="res://scripts/main_menu.gd" id="1_ftydy"]
 [ext_resource type="Texture2D" uid="uid://cftoflvb7v26w" path="res://Assets/Background_MainMenu_Animated.png" id="2_87ipw"]
+[ext_resource type="AudioStream" uid="uid://dau7djt5gqovh" path="res://Audio/Main_Menu.mp3" id="2_hii65"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_87ipw"]
 atlas = ExtResource("2_87ipw")
@@ -38,42 +39,33 @@ region = Rect2(11193, 0, 1599, 1131)
 [sub_resource type="SpriteFrames" id="SpriteFrames_ejkra"]
 animations = [{
 "frames": [{
-"duration": 1.0,
+"duration": 0.1,
 "texture": SubResource("AtlasTexture_87ipw")
 }, {
-"duration": 1.0,
+"duration": 0.1,
 "texture": SubResource("AtlasTexture_hii65")
 }, {
-"duration": 1.0,
+"duration": 1.5,
 "texture": SubResource("AtlasTexture_kqsxi")
 }, {
-"duration": 1.0,
+"duration": 0.5,
 "texture": SubResource("AtlasTexture_pvidh")
 }, {
-"duration": 1.0,
+"duration": 0.5,
 "texture": SubResource("AtlasTexture_hptlk")
 }, {
-"duration": 1.0,
+"duration": 0.5,
 "texture": SubResource("AtlasTexture_oqads")
 }, {
-"duration": 1.0,
+"duration": 0.5,
 "texture": SubResource("AtlasTexture_s2f1d")
 }, {
-"duration": 1.0,
+"duration": 0.5,
 "texture": SubResource("AtlasTexture_ejkra")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_kqsxi")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_hii65")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_87ipw")
 }],
 "loop": true,
 "name": &"default",
-"speed": 5.0
+"speed": 1.0
 }]
 
 [node name="MainMenu" type="Control"]
@@ -86,12 +78,14 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_ftydy")
+Bgm_Lobby = ExtResource("2_hii65")
 
 [node name="Background" type="AnimatedSprite2D" parent="."]
 position = Vector2(576, 408)
 scale = Vector2(0.725, 0.725)
 sprite_frames = SubResource("SpriteFrames_ejkra")
-frame_progress = 0.223127
+autoplay = "default"
+frame_progress = 0.249731
 metadata/_edit_use_anchors_ = true
 
 [node name="TitleLabel" type="Label" parent="."]
