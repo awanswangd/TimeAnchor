@@ -6,6 +6,8 @@ extends StaticBody2D
 var is_player_inside: bool = false
 var tile_size: float = 64.0 
 @onready var aura_visual: Sprite2D = $AuraArea/AuraVisual
+@export var sfx_explosion_suspense: AudioStream
+@export var sfx_explosion: AudioStream
 
 func _ready() -> void:
 	setup_aura_visual_size()
@@ -38,7 +40,9 @@ func setup_aura_visual_size() -> void:
 	aura_visual.scale = Vector2(required_scale, required_scale)
 
 func detonate() -> void:
-	print("BOOM! Time Anchor Meledak!")
+	AudioManager.play_sfx(sfx_explosion_suspense, true)
+	await get_tree().create_timer(1.0).timeout
+	AudioManager.play_sfx(sfx_explosion, true)
 	var cam = get_tree().get_first_node_in_group("camera")
 	if cam != null and cam.has_method("apply_shake"):
 		cam.apply_shake(15.0)
@@ -51,13 +55,9 @@ func detonate() -> void:
 	if area == null: return
 	
 	var overlapping_bodies = area.get_overlapping_bodies()
-	print("Benda yang kena ledakan: ", overlapping_bodies)
 	for body in overlapping_bodies:
 		if body.is_in_group("enemy") and body.has_method("die"):
-			print("Musuh ini punya fungsi die, bunuh!")
 			body.die() 
-		else:
-				print("ERROR: Musuh ini GA PUNYA fungsi die!")
 		area.monitoring = false 
 	if aura_visual != null:
 		aura_visual.hide()
@@ -73,7 +73,6 @@ func restore_surrounding_tiles() -> void:
 	var grid_manager = get_tree().get_first_node_in_group("grid_manager") 
 	
 	if tilemap == null or grid_manager == null:
-		print("ERROR: Tilemap atau GridManager tidak ditemukan!")
 		return
 		
 	var local_pos = tilemap.to_local(global_position)

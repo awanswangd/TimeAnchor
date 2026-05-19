@@ -7,9 +7,11 @@
 [ext_resource type="Script" uid="uid://dx5tuvp2ugmt1" path="res://Scripts/enemy_spawner.gd" id="6_1xcnr"]
 [ext_resource type="Script" uid="uid://ccquy3ffukec5" path="res://Scripts/ui_manager.gd" id="6_ow1sv"]
 [ext_resource type="Script" uid="uid://c31nxo4fgt5n2" path="res://Scripts/game_manager.gd" id="7_ow1sv"]
+[ext_resource type="AudioStream" uid="uid://1xcpnybgg8sf" path="res://Audio/Bgm1.mp3" id="8_0sxm5"]
 [ext_resource type="PackedScene" uid="uid://bbcxsqq6pge3p" path="res://Scene/HealthBar.tscn" id="9_3pt4j"]
 [ext_resource type="PackedScene" uid="uid://kq33rjky8c81" path="res://Scene/SkillUI.tscn" id="9_c2iwn"]
 [ext_resource type="PackedScene" uid="uid://ddysq8c7hxaty" path="res://Scene/EnergyBar.tscn" id="10_7y4ci"]
+[ext_resource type="PackedScene" uid="uid://7s7cny7wu3so" path="res://Scene/pause_menu.tscn" id="14_hspdg"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_7y4ci"]
 texture = ExtResource("1_3pt4j")
@@ -332,6 +334,7 @@ script = ExtResource("6_1xcnr")
 
 [node name="GameManager" type="Node" parent="." groups=["game_manager"]]
 script = ExtResource("7_ow1sv")
+bgm_act_1 = ExtResource("8_0sxm5")
 
 [node name="UIManager" type="CanvasLayer" parent="." groups=["ui_mannager"]]
 process_mode = 3
@@ -522,3 +525,5 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_font_sizes/font_size = 32
 text = "Objective Text"
+
+[node name="PauseMenu" parent="." instance=ExtResource("14_hspdg")]

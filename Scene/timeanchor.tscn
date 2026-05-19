@@ -1,8 +1,10 @@
-[gd_scene load_steps=6 format=3 uid="uid://cpn2jl5qoe57h"]
+[gd_scene load_steps=8 format=3 uid="uid://cpn2jl5qoe57h"]
 
 [ext_resource type="Script" uid="uid://vny3k1s52dda" path="res://Scripts/timeanchor.gd" id="1_h5wji"]
 [ext_resource type="Texture2D" uid="uid://dupkw7nbisfb0" path="res://Assets/aura_lingkaran.png" id="2_5x01l"]
 [ext_resource type="Texture2D" uid="uid://dktq4n7ysmt64" path="res://Assets/Screenshot 2026-05-03 210442.png" id="2_6omjd"]
+[ext_resource type="AudioStream" uid="uid://d3g3el5l51f5v" path="res://Audio/explosion_suspense.wav" id="2_txlc8"]
+[ext_resource type="AudioStream" uid="uid://cerd2xbnlfh2x" path="res://Audio/Ledakan_Anchor.wav" id="3_5a4ed"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_6omjd"]
 radius = 128.004
@@ -15,6 +17,8 @@ collision_layer = 0
 collision_mask = 0
 script = ExtResource("1_h5wji")
 radius = 5
+sfx_explosion_suspense = ExtResource("2_txlc8")
+sfx_explosion = ExtResource("3_5a4ed")
 
 [node name="AuraArea" type="Area2D" parent="."]
 
