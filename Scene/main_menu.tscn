@@ -1,6 +1,80 @@
-[gd_scene load_steps=2 format=3 uid="uid://bur8sbp3qbgql"]
+[gd_scene load_steps=12 format=3 uid="uid://bur8sbp3qbgql"]
 
-[ext_resource type="Script" uid="uid://bp14rno1pri66" path="res://scripts/main_menu.gd" id="1_ftydy"]
+[ext_resource type="Script" uid="uid://bp14rno1pri66" path="res://Scripts/main_menu.gd" id="1_ftydy"]
+[ext_resource type="Texture2D" uid="uid://cftoflvb7v26w" path="res://Assets/Background_MainMenu_Animated.png" id="2_87ipw"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_87ipw"]
+atlas = ExtResource("2_87ipw")
+region = Rect2(0, 0, 1599, 1131)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hii65"]
+atlas = ExtResource("2_87ipw")
+region = Rect2(1599, 0, 1599, 1131)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kqsxi"]
+atlas = ExtResource("2_87ipw")
+region = Rect2(3198, 0, 1599, 1131)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pvidh"]
+atlas = ExtResource("2_87ipw")
+region = Rect2(4797, 0, 1599, 1131)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hptlk"]
+atlas = ExtResource("2_87ipw")
+region = Rect2(6396, 0, 1599, 1131)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_oqads"]
+atlas = ExtResource("2_87ipw")
+region = Rect2(7995, 0, 1599, 1131)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_s2f1d"]
+atlas = ExtResource("2_87ipw")
+region = Rect2(9594, 0, 1599, 1131)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ejkra"]
+atlas = ExtResource("2_87ipw")
+region = Rect2(11193, 0, 1599, 1131)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_ejkra"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_87ipw")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hii65")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_kqsxi")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pvidh")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hptlk")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_oqads")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_s2f1d")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ejkra")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_kqsxi")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hii65")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_87ipw")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
 
 [node name="MainMenu" type="Control"]
 process_mode = 3
@@ -13,43 +87,39 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_ftydy")
 
-[node name="Background" type="ColorRect" parent="."]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0, 0, 0, 1)
+[node name="Background" type="AnimatedSprite2D" parent="."]
+position = Vector2(576, 408)
+scale = Vector2(0.725, 0.725)
+sprite_frames = SubResource("SpriteFrames_ejkra")
+frame_progress = 0.223127
 metadata/_edit_use_anchors_ = true
 
 [node name="TitleLabel" type="Label" parent="."]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.5
-anchor_top = 0.0987654
-anchor_right = 0.5
-anchor_bottom = 0.0987654
+anchor_left = 0.696615
+anchor_top = 0.160494
+anchor_right = 0.831163
+anchor_bottom = 0.194444
 offset_left = -20.0
 offset_right = 20.0
 offset_bottom = 23.0
 grow_horizontal = 2
-theme_override_font_sizes/font_size = 32
+theme_override_font_sizes/font_size = 42
 text = "Time Anchor"
 metadata/_edit_use_anchors_ = true
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.486111
-anchor_top = 0.433642
-anchor_right = 0.513889
-anchor_bottom = 0.566358
-offset_left = -20.0
-offset_top = -20.0
-offset_right = 20.0
-offset_bottom = 20.0
-grow_horizontal = 2
+anchor_left = 0.805556
+anchor_top = 0.5
+anchor_right = 0.805556
+anchor_bottom = 0.5
+offset_left = -72.0
+offset_top = -63.0
+offset_bottom = 63.0
+grow_horizontal = 0
 grow_vertical = 2
 theme_override_constants/separation = 20
 metadata/_edit_use_anchors_ = true

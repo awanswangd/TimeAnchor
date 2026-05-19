@@ -15,22 +15,32 @@ func _ready() -> void:
 		
 		for cell in all_cells:
 			var cell_coords = arena_tilemap.get_cell_atlas_coords(cell)
-			
 			if cell_coords == floor_atlas_coords:
 				initial_floor_blueprint[cell] = true
 				
 	decay_timer = Timer.new()
 	decay_timer.wait_time = decay_speed
-	decay_timer.autostart = true
+	decay_timer.autostart = false 
 	decay_timer.timeout.connect(destroy_random_floor)
 	add_child(decay_timer)
 
+func pause_decay() -> void:
+	decay_timer.stop()
+
+func resume_decay() -> void:
+	decay_timer.start()
+
+func get_total_blueprint_size() -> int:
+	return initial_floor_blueprint.size()
+
+func punch_holes(amount: int) -> void:
+	for i in range(amount):
+		destroy_random_floor()
+
 func destroy_random_floor() -> void:
-	if arena_tilemap == null:
-		return
+	if arena_tilemap == null: return
 		
 	var active_floors = []
-	
 	for cell in initial_floor_blueprint.keys():
 		if arena_tilemap.get_cell_atlas_coords(cell) == floor_atlas_coords:
 			active_floors.append(cell)

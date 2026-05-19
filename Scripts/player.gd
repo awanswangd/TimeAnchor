@@ -12,6 +12,7 @@ var energy_drop_scene = preload("res://Scene/EnergyDrop.tscn")
 @export_category("References")
 @export var time_anchor_scene: PackedScene 
 @export var arena_tilemap: TileMapLayer
+@export var blackhole_pull: float = 50.0
 
 #PLAYER STATS
 @export_category("Player Stats")
@@ -22,7 +23,7 @@ var energy_drop_scene = preload("res://Scene/EnergyDrop.tscn")
 var current_health: int
 var current_energy: int
 var sprint_tick_timer: float = 0.0
-
+var is_blackhole_active: bool = false
 #DASH SYSTEM
 @export_group("Dash Settings")
 @export var dash_speed_multiplier: float = 3.5 
@@ -109,6 +110,8 @@ func handle_movement(delta: float) -> void:
 			sprint_tick_timer = 0.0 
 			
 		velocity = input_dir * current_speed
+		if is_blackhole_active:
+			velocity.y -= blackhole_pull
 		move_and_slide()
 
 func check_double_tap(delta: float) -> void:
@@ -232,3 +235,6 @@ func check_void_damage(delta: float) -> void:
 				energy_changed.emit(current_energy)
 			else:
 				take_damage(10) 
+
+func set_blackhole_active(active: bool) -> void:
+	is_blackhole_active = active

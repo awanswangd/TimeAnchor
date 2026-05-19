@@ -13,6 +13,8 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	if is_player_inside and Input.is_action_just_pressed("detonate"):
+		if not Global.can_detonate:
+			return
 		detonate()
 
 func _on_aura_area_body_entered(body: Node2D) -> void:
@@ -53,7 +55,7 @@ func detonate() -> void:
 	for body in overlapping_bodies:
 		if body.is_in_group("enemy") and body.has_method("die"):
 			print("Musuh ini punya fungsi die, bunuh!")
-			body.die() # Musuh mati (dan ngedrop bensin lagi!)
+			body.die() 
 		else:
 				print("ERROR: Musuh ini GA PUNYA fungsi die!")
 		area.monitoring = false 
@@ -68,7 +70,7 @@ func detonate() -> void:
 
 func restore_surrounding_tiles() -> void:
 	var tilemap = get_tree().get_first_node_in_group("arena")
-	var grid_manager = get_tree().get_first_node_in_group("grid_manager") # Memanggil blueprint
+	var grid_manager = get_tree().get_first_node_in_group("grid_manager") 
 	
 	if tilemap == null or grid_manager == null:
 		print("ERROR: Tilemap atau GridManager tidak ditemukan!")
