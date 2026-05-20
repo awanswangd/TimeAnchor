@@ -4,7 +4,7 @@ var bgm_player: AudioStreamPlayer
 
 func _ready() -> void:
 	bgm_player = AudioStreamPlayer.new()
-	bgm_player.bus = "Master" 
+	bgm_player.bus = "BGM" 
 	add_child(bgm_player)
 
 func play_bgm(stream: AudioStream) -> void:
@@ -28,6 +28,7 @@ func play_sfx(stream: AudioStream, randomize_pitch: bool = false) -> void:
 	if stream == null: return
 	var sfx_player = AudioStreamPlayer.new()
 	sfx_player.stream = stream
+	sfx_player.bus = "SFX"
 	if randomize_pitch:
 		sfx_player.pitch_scale = randf_range(0.9, 1.1)
 		

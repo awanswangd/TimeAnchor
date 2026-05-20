@@ -154,6 +154,8 @@ func process_act_3(delta: float) -> void:
 
 func trigger_game_over_warp_failed() -> void:
 	set_process(false)
+	if ui_manager != null and ui_manager.has_method("hide_hud"):
+		ui_manager.hide_hud()
 	munculkan_dialog([
 		"Pilot|KAPTEN! Waktu habis! Integritas lambung 0%! Mesin warp mati!",
 		"System|CRITICAL ERROR. HULL BREACH DETECTED. WELCOME TO THE VOID."
@@ -162,6 +164,8 @@ func trigger_game_over_warp_failed() -> void:
 	if ui_manager.has_method("show_game_over"):
 		ui_manager.show_game_over()
 		set_process(false) 
+		if ui_manager != null and ui_manager.has_method("hide_hud"):
+			ui_manager.hide_hud()
 
 func trigger_you_win() -> void:
 	set_process(false)
@@ -201,17 +205,25 @@ func spawn_tentacles() -> void:
 
 func tentacle_destroyed() -> void:
 	tentacles_left -= 1
-	
 	if tentacles_left <= 0:
 		if ui_manager != null and ui_manager.has_method("show_survival_objective"):
 			ui_manager.show_survival_objective()
 		
 
-func munculkan_dialog(teks_array: Array) -> void:
+func munculkan_dialog(teks_array: Array, kembalikan_hud: bool = true) -> void:
 	if dialog_scene != null:
 		var dialog_instance = dialog_scene.instantiate()
 		dialog_instance.dialog_queue = teks_array
 		get_parent().add_child.call_deferred(dialog_instance)
+		
+		if ui_manager != null and ui_manager.has_method("hide_hud"):
+			ui_manager.hide_hud()
+			
+		if kembalikan_hud:
+			dialog_instance.tree_exited.connect(func():
+				if ui_manager != null and ui_manager.has_method("show_hud"):
+					ui_manager.show_hud()
+			)
 
 func mulai_monolog_tutorial() -> void:
 	munculkan_dialog([

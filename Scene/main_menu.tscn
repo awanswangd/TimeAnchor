@@ -1,72 +1,8 @@
-[gd_scene load_steps=13 format=3 uid="uid://bur8sbp3qbgql"]
+[gd_scene load_steps=4 format=3 uid="uid://bur8sbp3qbgql"]
 
-[ext_resource type="Script" uid="uid://bp14rno1pri66" path="res://scripts/main_menu.gd" id="1_ftydy"]
-[ext_resource type="Texture2D" uid="uid://cftoflvb7v26w" path="res://Assets/Background_MainMenu_Animated.png" id="2_87ipw"]
+[ext_resource type="Script" uid="uid://bp14rno1pri66" path="res://Scripts/main_menu.gd" id="1_ftydy"]
 [ext_resource type="AudioStream" uid="uid://dau7djt5gqovh" path="res://Audio/Main_Menu.mp3" id="2_hii65"]
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_87ipw"]
-atlas = ExtResource("2_87ipw")
-region = Rect2(0, 0, 1599, 1131)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_hii65"]
-atlas = ExtResource("2_87ipw")
-region = Rect2(1599, 0, 1599, 1131)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_kqsxi"]
-atlas = ExtResource("2_87ipw")
-region = Rect2(3198, 0, 1599, 1131)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_pvidh"]
-atlas = ExtResource("2_87ipw")
-region = Rect2(4797, 0, 1599, 1131)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_hptlk"]
-atlas = ExtResource("2_87ipw")
-region = Rect2(6396, 0, 1599, 1131)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_oqads"]
-atlas = ExtResource("2_87ipw")
-region = Rect2(7995, 0, 1599, 1131)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_s2f1d"]
-atlas = ExtResource("2_87ipw")
-region = Rect2(9594, 0, 1599, 1131)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_ejkra"]
-atlas = ExtResource("2_87ipw")
-region = Rect2(11193, 0, 1599, 1131)
-
-[sub_resource type="SpriteFrames" id="SpriteFrames_ejkra"]
-animations = [{
-"frames": [{
-"duration": 0.1,
-"texture": SubResource("AtlasTexture_87ipw")
-}, {
-"duration": 0.1,
-"texture": SubResource("AtlasTexture_hii65")
-}, {
-"duration": 1.5,
-"texture": SubResource("AtlasTexture_kqsxi")
-}, {
-"duration": 0.5,
-"texture": SubResource("AtlasTexture_pvidh")
-}, {
-"duration": 0.5,
-"texture": SubResource("AtlasTexture_hptlk")
-}, {
-"duration": 0.5,
-"texture": SubResource("AtlasTexture_oqads")
-}, {
-"duration": 0.5,
-"texture": SubResource("AtlasTexture_s2f1d")
-}, {
-"duration": 0.5,
-"texture": SubResource("AtlasTexture_ejkra")
-}],
-"loop": true,
-"name": &"default",
-"speed": 1.0
-}]
+[ext_resource type="Texture2D" uid="uid://clxq5bynemhm5" path="res://Assets/Main_MenuBG.png" id="3_hii65"]
 
 [node name="MainMenu" type="Control"]
 process_mode = 3
@@ -80,13 +16,17 @@ grow_vertical = 2
 script = ExtResource("1_ftydy")
 Bgm_Lobby = ExtResource("2_hii65")
 
-[node name="Background" type="AnimatedSprite2D" parent="."]
-position = Vector2(576, 408)
-scale = Vector2(0.725, 0.725)
-sprite_frames = SubResource("SpriteFrames_ejkra")
-frame = 4
-frame_progress = 0.645341
-metadata/_edit_use_anchors_ = true
+[node name="Background" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 616.0
+offset_bottom = 592.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.65, 0.65)
+texture = ExtResource("3_hii65")
 
 [node name="TitleLabel" type="Label" parent="."]
 layout_mode = 1
@@ -95,24 +35,24 @@ anchor_left = 0.696615
 anchor_top = 0.160494
 anchor_right = 0.831163
 anchor_bottom = 0.194444
-offset_left = -20.0
-offset_right = 20.0
-offset_bottom = 23.0
+offset_left = 76.9996
+offset_right = 179.0
+offset_bottom = 36.0004
 grow_horizontal = 2
 theme_override_font_sizes/font_size = 42
 text = "Time Anchor"
-metadata/_edit_use_anchors_ = true
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.805556
-anchor_top = 0.5
-anchor_right = 0.805556
-anchor_bottom = 0.5
-offset_left = -72.0
-offset_top = -63.0
-offset_bottom = 63.0
+anchor_left = 0.8125
+anchor_top = 0.500772
+anchor_right = 0.832465
+anchor_bottom = 0.500772
+offset_left = 12.0
+offset_top = -99.5
+offset_right = 128.0
+offset_bottom = 99.5
 grow_horizontal = 0
 grow_vertical = 2
 theme_override_constants/separation = 20
@@ -122,8 +62,102 @@ metadata/_edit_use_anchors_ = true
 layout_mode = 2
 theme_override_font_sizes/font_size = 32
 text = "Play"
+alignment = 2
+
+[node name="SettingButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Settings"
+alignment = 2
 
 [node name="ExitButton" type="Button" parent="VBoxContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 32
 text = "Exit"
+alignment = 2
+
+[node name="SettingPanel" type="Panel" parent="."]
+process_mode = 3
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="BGMLabel" type="Label" parent="SettingPanel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = -1.353
+anchor_top = -5.281
+anchor_right = -1.353
+anchor_bottom = -5.281
+offset_left = 1766.66
+offset_top = 3529.59
+offset_right = 1828.66
+offset_bottom = 3566.59
+theme_override_font_sizes/font_size = 27
+text = "BGM"
+
+[node name="BGMSlider" type="HSlider" parent="SettingPanel"]
+modulate = Color(0.356863, 0.0509804, 1, 1)
+texture_filter = 1
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.148148
+anchor_right = 0.5
+anchor_bottom = 0.148148
+offset_left = -298.0
+offset_right = 2.0
+offset_bottom = 32.0
+grow_horizontal = 2
+scale = Vector2(2, 2)
+min_value = 0.001
+max_value = 1.0
+step = 0.01
+value = 0.501
+
+[node name="SFXSlider" type="HSlider" parent="SettingPanel"]
+modulate = Color(0.45098, 0, 1, 1)
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -297.0
+offset_top = 153.0
+offset_right = 3.0
+offset_bottom = 185.0
+grow_horizontal = 2
+scale = Vector2(2, 2)
+min_value = 0.001
+max_value = 1.0
+step = 0.01
+value = 0.501
+
+[node name="SFXLabel" type="Label" parent="SettingPanel"]
+layout_mode = 0
+offset_left = 216.0
+offset_top = 160.0
+offset_right = 262.0
+offset_bottom = 197.0
+theme_override_font_sizes/font_size = 27
+text = "SFX"
+
+[node name="CloseButton" type="Button" parent="SettingPanel"]
+self_modulate = Color(1, 0, 0, 1)
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -91.0
+offset_bottom = 124.0
+grow_horizontal = 0
+theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 85
+text = "x"
+
+[connection signal="pressed" from="SettingPanel/CloseButton" to="." method="_on_close_button_pressed"]

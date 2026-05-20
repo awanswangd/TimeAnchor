@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cftoflvb7v26w"
-path="res://.godot/imported/Background_MainMenu_Animated.png-a3b839f28b78aa7fec33ca36b0860c07.ctex"
+uid="uid://bwhwop7r7oyxh"
+path="res://.godot/imported/Dash_Icon.png-d6038636ba99b4a9c216a3c830ff2007.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Background_MainMenu_Animated.png"
-dest_files=["res://.godot/imported/Background_MainMenu_Animated.png-a3b839f28b78aa7fec33ca36b0860c07.ctex"]
+source_file="res://Assets/Dash_Icon.png"
+dest_files=["res://.godot/imported/Dash_Icon.png-d6038636ba99b4a9c216a3c830ff2007.ctex"]
 
 [params]
 

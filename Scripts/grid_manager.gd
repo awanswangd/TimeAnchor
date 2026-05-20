@@ -5,19 +5,15 @@ extends Node
 
 var decay_timer: Timer
 
-# Menyimpan data dalam format { Koordinat_Kotak : Koordinat_Atlas_Asli }
 var initial_floor_blueprint: Dictionary = {}
 
 func _ready() -> void:
 	add_to_group("grid_manager")
 	
 	if arena_tilemap != null:
-		# Karena tembok dan lantai sudah dipisah layernya, 
-		# kita yakin 100% semua yang ada di arena_tilemap ini adalah lantai.
 		var all_cells = arena_tilemap.get_used_cells()
 		
 		for cell in all_cells:
-			# SIMPAN GAMBAR ASLINYA! (Merekam sudut, pinggiran, dll secara spesifik)
 			initial_floor_blueprint[cell] = arena_tilemap.get_cell_atlas_coords(cell)
 			
 	decay_timer = Timer.new()
