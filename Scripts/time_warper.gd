@@ -2,7 +2,7 @@ extends CharacterBody2D
 
 @export var base_speed: float = 120.0
 @export var slow_speed: float = 40.0 
-@export var damage: int = 15
+@export var damage: int = 5
 
 var current_speed: float
 var player: Node2D
@@ -20,7 +20,6 @@ func _physics_process(delta: float) -> void:
 	velocity = direction * current_speed
 	move_and_slide()
 	
-	#Mengecek apakah menabrak player
 	for i in get_slide_collision_count():
 		var collision = get_slide_collision(i)
 		var collider = collision.get_collider()

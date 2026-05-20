@@ -12,6 +12,7 @@ var energy_drop_scene = preload("res://Scene/EnergyDrop.tscn")
 @export_category("References")
 @export var time_anchor_scene: PackedScene 
 @export var arena_tilemap: TileMapLayer
+@export var blackhole_pull: float = 50.0
 
 #PLAYER STATS
 @export_category("Player Stats")
@@ -22,6 +23,8 @@ var energy_drop_scene = preload("res://Scene/EnergyDrop.tscn")
 var current_health: int
 var current_energy: int
 var sprint_tick_timer: float = 0.0
+var is_blackhole_active: bool = false
+var is_invincible: bool = false 
 
 #DASH SYSTEM
 @export_group("Dash Settings")
@@ -44,6 +47,13 @@ var last_key_pressed: String = ""
 @export var anchor_cooldown_time: float = 3.0 
 var anchor_current_cooldown: float = 0.0 
 
+#REGEN SETTINGS (SISTEM HAFIZ)
+@export_group("Regen Settings")
+@export var regen_rate: float = 1.0 # Darah yang nambah per detik
+@export var regen_delay: float = 2.0 # Tunggu 2 detik setelah dipukul buat regen
+var time_since_last_hit: float = 0.0
+var hp_float: float = 100.0
+
 #ENVIRONMENT (VOID DAMAGE)
 var void_damage_interval: float = 0.5
 var void_damage_timer: float = 0.0
@@ -52,6 +62,7 @@ func _ready() -> void:
 	add_to_group("player") 
 	current_health = max_health
 	current_energy = starting_energy
+	hp_float = float(max_health) # Inisialisasi regen
 	
 	var hb = get_tree().get_first_node_in_group("health_bar")
 	if hb != null and hb.has_method("init_health"):
@@ -69,8 +80,26 @@ func _physics_process(delta: float) -> void:
 		anchor_current_cooldown -= delta
 	check_double_tap(delta)
 	handle_movement(delta)
+	
 	if not is_dashing:
 		check_void_damage(delta)
+		
+	# --- SISTEM AUTO REGEN HAFIZ ---
+	time_since_last_hit += delta
+	if time_since_last_hit >= regen_delay and current_health < max_health:
+		hp_float += regen_rate * delta
+		var new_health = int(hp_float)
+		
+		if new_health > current_health:
+			current_health = new_health
+			if current_health > max_health:
+				current_health = max_health
+				
+			health_changed.emit(current_health)
+			var hb = get_tree().get_first_node_in_group("health_bar")
+			if hb != null:
+				hb.set_deferred("health", current_health)
+	# --------------------------------
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("place_anchor"):
@@ -109,6 +138,8 @@ func handle_movement(delta: float) -> void:
 			sprint_tick_timer = 0.0 
 			
 		velocity = input_dir * current_speed
+		if is_blackhole_active:
+			velocity.y -= blackhole_pull
 		move_and_slide()
 
 func check_double_tap(delta: float) -> void:
@@ -130,7 +161,6 @@ func check_double_tap(delta: float) -> void:
 					last_key_pressed = "" 
 					return
 			else:
-				# Ketukan pertama
 				last_key_pressed = action
 				double_tap_timer = double_tap_window
 
@@ -138,7 +168,6 @@ func start_dash() -> void:
 	is_dashing = true
 	dash_direction = Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
 	
-	# Jaga-jaga kalau input vector entah kenapa 0
 	if dash_direction == Vector2.ZERO:
 		dash_direction = Vector2.RIGHT 
 	
@@ -154,17 +183,17 @@ func start_dash() -> void:
 	var eb = get_tree().get_first_node_in_group("energy_bar")
 	if eb != null:
 		eb.set_deferred("energy", current_energy)
+		
+	# --- MEKANIK I-FRAME 0,3 DETIK ---
+	is_invincible = true
+	await get_tree().create_timer(0.3).timeout
+	is_invincible = false
+	# ---------------------------------
 
 func try_place_anchor() -> void:
-	#Cek 1
-	if anchor_current_cooldown > 0:
-		return
-	#Cek 2
-	if time_anchor_scene == null:
-		return
-	#Cek 3
-	if current_energy < anchor_cost:
-		return
+	if anchor_current_cooldown > 0: return
+	if time_anchor_scene == null: return
+	if current_energy < anchor_cost: return
 		
 	current_energy -= anchor_cost
 	anchor_current_cooldown = anchor_cooldown_time
@@ -172,9 +201,11 @@ func try_place_anchor() -> void:
 	var eb = get_tree().get_first_node_in_group("energy_bar")
 	if eb != null:
 		eb.set_deferred("energy", current_energy)
+		
 	var cam = get_tree().get_first_node_in_group("camera")
 	if cam != null and cam.has_method("apply_shake"):
 		cam.apply_shake(4.5)
+		
 	var anchor = time_anchor_scene.instantiate()
 	anchor.global_position = global_position
 	get_tree().current_scene.add_child(anchor)
@@ -185,10 +216,22 @@ func try_place_anchor() -> void:
 		skill_ui.start_anchor_cooldown()
 
 func take_damage(amount: int) -> void:
+	# --- CEK I-FRAME SEBELUM NGURANGIN DARAH ---
+	if is_invincible:
+		return
+	# -------------------------------------------
+		
 	if current_health <= 0:
 		return
+		
 	current_health -= amount
 	health_changed.emit(current_health)
+	
+	# --- RESET TIMER REGEN & SINKRONISASI ---
+	time_since_last_hit = 0.0
+	hp_float = float(current_health)
+	# ----------------------------------------
+	
 	var cam = get_tree().get_first_node_in_group("camera")
 	if cam != null and cam.has_method("apply_shake"):
 		cam.apply_shake(3.5)
@@ -203,7 +246,6 @@ func take_damage(amount: int) -> void:
 	if current_health <= 0:
 		die()
 
-
 func die() -> void:
 	player_died.emit()
 	hide() 
@@ -214,8 +256,7 @@ func die() -> void:
 		ui.show_game_over()
 
 func check_void_damage(delta: float) -> void:
-	if arena_tilemap == null:
-		return
+	if arena_tilemap == null: return
 		
 	void_damage_timer += delta
 	
@@ -232,3 +273,6 @@ func check_void_damage(delta: float) -> void:
 				energy_changed.emit(current_energy)
 			else:
 				take_damage(10) 
+
+func set_blackhole_active(active: bool) -> void:
+	is_blackhole_active = active

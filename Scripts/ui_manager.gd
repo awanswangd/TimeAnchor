@@ -43,11 +43,19 @@ func show_win() -> void:
 		you_win_panel.show()
 	get_tree().paused = true 
 
+func show_warp_timer() -> void:
+	if warp_timer_label != null:
+		warp_timer_label.show()
+
 func hide_warp_timer() -> void:
-	var label = get_node_or_null("WarpTimerLabel")
-	if label != null:
-		label.text = ""
-		label.hide()
+	if warp_timer_label != null:
+		warp_timer_label.hide()
+
+func update_warp_timer(time_left: float) -> void:
+	if warp_timer_label != null:
+		var minutes: int = int(time_left) / 60
+		var seconds: int = int(time_left) % 60
+		warp_timer_label.text = "%02d:%02d" % [minutes, seconds]
 
 func show_survival_objective() -> void:
 	var obj_label = get_node_or_null("ObjectiveLabel")
@@ -57,11 +65,6 @@ func show_survival_objective() -> void:
 		await get_tree().create_timer(2.0).timeout
 		obj_label.hide()
 
-func update_warp_timer(waktu: float) -> void:
-	var label = get_node_or_null("WarpTimerLabel")
-	if label != null:
-		label.show()
-		label.text = "WARP DALAM: " + str(ceil(waktu))
 
 func restart_game() -> void:
 	get_tree().paused = false 
