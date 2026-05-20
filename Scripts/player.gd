@@ -1,5 +1,6 @@
 extends CharacterBody2D
-
+@onready var anim: AnimatedSprite2D = $AnimatedSprite2D
+@onready var player_light: PointLight2D = $PointLight2D
 #SIGNALS & PRELOADS
 signal health_changed(new_health: int)
 signal energy_changed(new_energy: int)
@@ -124,6 +125,19 @@ func handle_movement(delta: float) -> void:
 		var input_dir: Vector2 = Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
 		var current_speed = speed 
 		
+		if input_dir != Vector2.ZERO:
+			if abs(input_dir.x) > abs(input_dir.y):
+				anim.animation = "walk_side"
+				anim.flip_h = input_dir.x > 0 
+			elif input_dir.y > 0:
+				anim.animation = "walk_front"
+			elif input_dir.y < 0:
+				anim.animation = "walk_back"
+				
+			anim.play()
+		else:
+			anim.stop()
+		
 		if Input.is_action_pressed("sprint") and current_energy > 0 and input_dir != Vector2.ZERO:
 			current_speed = speed * 1.6 
 			sprint_tick_timer += delta
@@ -231,10 +245,15 @@ func take_damage(amount: int) -> void:
 	if hb != null:
 		hb.set_deferred("health", current_health)
 
+	is_invincible = true 
+	Engine.time_scale = 0.05
+	await get_tree().create_timer(0.1, true, false, true).timeout 
+	Engine.time_scale = 1.0
 	modulate = Color.RED
-	await get_tree().create_timer(0.1).timeout
+	await get_tree().create_timer(0.5).timeout 
 	modulate = Color.WHITE
-	
+	await get_tree().create_timer(0.5).timeout 
+	is_invincible = false 
 	if current_health <= 0:
 		die()
 
@@ -257,14 +276,18 @@ func check_void_damage(delta: float) -> void:
 		
 		var local_pos = arena_tilemap.to_local(global_position)
 		var grid_pos = arena_tilemap.local_to_map(local_pos)
-		var floor_id = arena_tilemap.get_cell_source_id(grid_pos)
-		
-		if floor_id == -1: 
+		var grid_manager = get_tree().get_first_node_in_group("grid_manager")
+		if grid_manager == null: 
+			return
+		var current_coords = arena_tilemap.get_cell_atlas_coords(grid_pos)
+		if current_coords == grid_manager.hole_tile_coords: 
 			if current_energy > 0:
 				current_energy -= 1 
 				energy_changed.emit(current_energy)
 			else:
-				take_damage(10) 
+				take_damage(10)
 
 func set_blackhole_active(active: bool) -> void:
 	is_blackhole_active = active
+	if player_light != null:
+		player_light.enabled = active

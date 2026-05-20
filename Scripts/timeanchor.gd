@@ -63,8 +63,6 @@ func detonate() -> void:
 	for body in overlapping_bodies:
 		if body.is_in_group("enemy") and body.has_method("die"):
 			body.die() 
-			
-	# Matikan monitoring dengan aman di luar loop
 	area.set_deferred("monitoring", false) 
 	
 	if aura_visual != null:
@@ -91,9 +89,10 @@ func restore_surrounding_tiles() -> void:
 	for x in range(-radius, radius + 1):
 		for y in range(-radius, radius + 1):
 			var target_cell = center_grid_pos + Vector2i(x, y)
-			var current_id = tilemap.get_cell_source_id(target_cell)
 			
-			if current_id == -1:
+			var current_coords = tilemap.get_cell_atlas_coords(target_cell)
+			
+			if current_coords == grid_manager.hole_tile_coords or tilemap.get_cell_source_id(target_cell) == -1:
 				var original_coords = grid_manager.get_original_floor_coords(target_cell)
 				if original_coords != Vector2i(-1, -1):
 					tilemap.set_cell(target_cell, floor_id, original_coords)

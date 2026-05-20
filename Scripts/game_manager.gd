@@ -2,7 +2,7 @@ extends Node
 
 enum Phase { ACT_1_TUTORIAL, ACT_2_SURVIVAL, ACT_3_BOSS }
 var current_phase: Phase = Phase.ACT_1_TUTORIAL
-
+@onready var black_hole_visual = get_node_or_null("BlackHole")
 @export_category("Game Settings")
 @export var tutorial_holes_amount: int = 5 #Jumlah lubang di Babak 1
 @export var tutorial_enemy_amount: int = 3 #Jumlah musuh di Babak 1
@@ -49,9 +49,7 @@ func _process(delta: float) -> void:
 
 func start_act_1() -> void:
 	current_phase = Phase.ACT_1_TUTORIAL
-	
 	Global.can_detonate = false
-	
 	var grid = get_tree().get_first_node_in_group("grid_manager")
 	var spawner = get_tree().get_first_node_in_group("spawner")
 	
@@ -72,6 +70,8 @@ func start_act_1() -> void:
 func process_act_1(_delta: float) -> void:
 	var enemies_left = get_tree().get_nodes_in_group("enemy").size()
 	var holes_left = check_remaining_holes()
+	if ui_manager != null and ui_manager.has_method("update_objective"):
+		ui_manager.update_objective("BABAK 1: Habisi %d Musuh & Tambal %d Lubang!" % [enemies_left, holes_left])
 	if enemies_left <= 0 and holes_left <= 0:
 		start_act_2()
 
@@ -80,11 +80,15 @@ func check_remaining_holes() -> int:
 	var arena = get_tree().get_first_node_in_group("arena")
 	
 	if grid != null and arena != null:
-		var target_tiles = grid.get_total_blueprint_size()
-		var current_tiles = arena.get_used_cells().size()
-		return max(0, target_tiles - current_tiles)
+		var holes_count = 0
+		var all_cells = arena.get_used_cells()
 		
-	return 999 
+		for cell in all_cells:
+			if arena.get_cell_atlas_coords(cell) == grid.hole_tile_coords:
+				holes_count += 1
+				
+		return holes_count
+	return 999
 
 func start_act_2() -> void:
 	current_phase = Phase.ACT_2_SURVIVAL
@@ -99,6 +103,8 @@ func start_act_2() -> void:
 	
 	if ui_manager.has_method("show_warp_timer"):
 		ui_manager.show_warp_timer()
+	if ui_manager != null and ui_manager.has_method("update_objective"):
+		ui_manager.update_objective("BABAK 2: Bertahan Hidup Hingga Waktu Teleportasi Habis!")
 
 	munculkan_dialog([
 			"Pilot|Kerja Bagus Kapten! Mesin belakang sudah beres, kita akan mulai teleportasi dalam 2 menit!",
@@ -121,6 +127,8 @@ func process_act_2(delta: float) -> void:
 		
 	if current_timer <= 10.0 and not dialog_10s_played:
 		dialog_10s_played = true
+		AudioManager.stop_bgm()
+		AudioManager.play_bgm(bgm_act_3)
 		munculkan_dialog(["Pilot|Gawat! Radar mendeteksi fluktuasi energi ruang angkasa yang aneh tepat di belakang kapal!"])
 	
 	if current_timer <= 0:
@@ -129,11 +137,15 @@ func process_act_2(delta: float) -> void:
 func start_act_3() -> void:
 	current_phase = Phase.ACT_3_BOSS
 	current_timer = warp_duration
-	
+	AudioManager.play_bgm(bgm_act_3)
+	if black_hole_visual != null:
+		black_hole_visual.show()
 	var player = get_tree().get_first_node_in_group("player")
 	if player != null and player.has_method("set_blackhole_active"):
 		player.set_blackhole_active(true)
-	
+	var canvas_ambient = get_node_or_null("../CanvasModulate") 
+	if canvas_ambient != null:
+		canvas_ambient.color = Color(0.15, 0.05, 0.25)
 	munculkan_dialog([
 		"Pilot|KAPTEN!! Sebuah Black Hole terbuka persis di belakang kita!",
 		"Pilot|Ada entitas kosmik mengerikan muncul dari dalamnya!",
@@ -145,6 +157,23 @@ func process_act_3(delta: float) -> void:
 	current_timer -= delta
 	if ui_manager.has_method("update_warp_timer"):
 		ui_manager.update_warp_timer(current_timer)
+		
+	if black_hole_visual != null and black_hole_visual.has_method("set_hole_scale"):
+		var progress = (warp_duration - current_timer) / warp_duration
+		progress = clamp(progress, 0.0, 1.0)
+		var current_scale = lerp(2.0, 6.0, progress)
+		black_hole_visual.set_hole_scale(current_scale)
+		
+	if ui_manager != null and ui_manager.has_method("update_objective"):
+		if tentacles_left > 0:
+			ui_manager.update_objective("BABAK FINAL: Hancurkan %d Tentakel Kosmik!" % tentacles_left)
+		else:
+			ui_manager.update_objective("BABAK FINAL: Bertahan Hingga Teleportasi Selesai!")
+	
+	var player = get_tree().get_first_node_in_group("player")
+	if player != null and "blackhole_pull" in player:
+		#Makin kecil current_timer, nilainya makin gede. Max pull bisa sampai 140
+		player.blackhole_pull = 20.0 + (60.0 - current_timer) * 2.0
 		
 	if current_timer <= 0:
 		if tentacles_left <= 0:

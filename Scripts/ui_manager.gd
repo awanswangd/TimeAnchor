@@ -36,6 +36,19 @@ func update_energy(new_energy: int) -> void:
 	if is_instance_valid(energy_bar):
 		energy_bar.value = new_energy
 
+func update_warp_timer(time_left: float) -> void:
+	if warp_timer_label != null:
+		var minutes: int = int(time_left) / 60
+		var seconds: int = int(time_left) % 60
+		warp_timer_label.text = "%02d:%02d" % [minutes, seconds]
+
+func update_objective(teks_objektif: String) -> void:
+	var obj_label = get_node_or_null("GameplayHUD/ObjectiveLabel") 
+	
+	if obj_label != null:
+		obj_label.text = teks_objektif
+		obj_label.show() 
+
 func show_game_over() -> void:
 	hide_hud()
 	if game_over_panel != null:
@@ -55,12 +68,6 @@ func show_warp_timer() -> void:
 func hide_warp_timer() -> void:
 	if warp_timer_label != null:
 		warp_timer_label.hide()
-
-func update_warp_timer(time_left: float) -> void:
-	if warp_timer_label != null:
-		var minutes: int = int(time_left) / 60
-		var seconds: int = int(time_left) % 60
-		warp_timer_label.text = "%02d:%02d" % [minutes, seconds]
 
 func show_survival_objective() -> void:
 	var obj_label = get_node_or_null("ObjectiveLabel")

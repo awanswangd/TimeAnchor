@@ -2,10 +2,12 @@ extends CharacterBody2D
 
 @export var base_speed: float = 120.0
 @export var slow_speed: float = 40.0 
-@export var damage: int = 5
+@export var damage: int = 10
+@export var attack_cooldown: float = 1.5
 
 var current_speed: float
 var player: Node2D
+var can_move: bool = true
 var energy_drop_scene = preload("res://Scene/EnergyDrop.tscn")
 
 func _ready() -> void:
@@ -27,7 +29,7 @@ func _physics_process(delta: float) -> void:
 		if collider != null and collider.is_in_group("player"):
 			if collider.has_method("take_damage"):
 				collider.take_damage(damage)
-				queue_free() 
+				start_attack_cooldown()
 
 func apply_time_warp(is_slowed: bool) -> void:
 	if is_slowed:
@@ -36,6 +38,11 @@ func apply_time_warp(is_slowed: bool) -> void:
 	else:
 		current_speed = base_speed
 		modulate = Color.WHITE
+
+func start_attack_cooldown() -> void:
+	can_move = false 
+	await get_tree().create_timer(attack_cooldown).timeout
+	can_move = true
 
 func die() -> void:
 	if energy_drop_scene != null:

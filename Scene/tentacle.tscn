@@ -68,7 +68,7 @@ animations = [{
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_gdsvx"]
-size = Vector2(61, 165)
+size = Vector2(147, 217.5)
 
 [node name="Tentacle" type="StaticBody2D"]
 position = Vector2(84, 26)
@@ -77,11 +77,11 @@ script = ExtResource("1_fjwje")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 texture_filter = 1
 position = Vector2(29, 31)
-scale = Vector2(3, 3)
+scale = Vector2(6, 6)
 sprite_frames = SubResource("SpriteFrames_t1v5d")
 autoplay = "default"
 frame_progress = 0.750613
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(30, 46)
+position = Vector2(4.5, 112.75)
 shape = SubResource("RectangleShape2D_gdsvx")

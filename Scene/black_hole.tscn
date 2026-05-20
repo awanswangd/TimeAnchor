@@ -1,0 +1,23 @@
+[gd_scene load_steps=6 format=3 uid="uid://bckxvmvwipqqm"]
+
+[ext_resource type="Script" uid="uid://b0o23bvdsq0rr" path="res://Scripts/black_hole.gd" id="1_lyf46"]
+[ext_resource type="Texture2D" uid="uid://cv60ymihkohf0" path="res://Assets/BlackHoleRing.png" id="3_5fgbh"]
+[ext_resource type="Texture2D" uid="uid://y1byjttvtg2g" path="res://Assets/BlackHoleCore.png" id="3_t5j22"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_t5j22"]
+light_mode = 1
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_lyf46"]
+blend_mode = 1
+light_mode = 1
+
+[node name="BlackHole" type="Node2D"]
+script = ExtResource("1_lyf46")
+
+[node name="Ring" type="Sprite2D" parent="."]
+material = SubResource("CanvasItemMaterial_t5j22")
+texture = ExtResource("3_t5j22")
+
+[node name="Core" type="Sprite2D" parent="."]
+material = SubResource("CanvasItemMaterial_lyf46")
+texture = ExtResource("3_5fgbh")
