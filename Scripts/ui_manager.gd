@@ -27,9 +27,14 @@ func _ready() -> void:
 func update_health(new_health: int) -> void:
 	if is_instance_valid(health_label):
 		health_label.text = "HP: " + str(new_health)
+	if is_instance_valid(health_bar):
+		health_bar.value = new_health
 
 func update_energy(new_energy: int) -> void:
-	energy_label.text = "Energi: " + str(new_energy)
+	if is_instance_valid(energy_label):
+		energy_label.text = "Energi: " + str(new_energy)
+	if is_instance_valid(energy_bar):
+		energy_bar.value = new_energy
 
 func show_game_over() -> void:
 	hide_hud()
@@ -64,7 +69,6 @@ func show_survival_objective() -> void:
 		obj_label.show()
 		await get_tree().create_timer(2.0).timeout
 		obj_label.hide()
-
 
 func restart_game() -> void:
 	get_tree().paused = false 

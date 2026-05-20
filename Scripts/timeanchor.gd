@@ -5,6 +5,8 @@ extends StaticBody2D
 @export var floor_atlas_coords: Vector2i = Vector2i(0, 0) 
 var is_player_inside: bool = false
 var tile_size: float = 64.0 
+var has_detonated: bool = false 
+
 @onready var aura_visual: Sprite2D = $AuraArea/AuraVisual
 @export var sfx_explosion_suspense: AudioStream
 @export var sfx_explosion: AudioStream
@@ -15,7 +17,7 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	if is_player_inside and Input.is_action_just_pressed("detonate"):
-		if not Global.can_detonate:
+		if not Global.can_detonate or has_detonated:
 			return
 		detonate()
 
@@ -40,9 +42,12 @@ func setup_aura_visual_size() -> void:
 	aura_visual.scale = Vector2(required_scale, required_scale)
 
 func detonate() -> void:
+	has_detonated = true
+	
 	AudioManager.play_sfx(sfx_explosion_suspense, true)
 	await get_tree().create_timer(1.0).timeout
 	AudioManager.play_sfx(sfx_explosion, true)
+	
 	var cam = get_tree().get_first_node_in_group("camera")
 	if cam != null and cam.has_method("apply_shake"):
 		cam.apply_shake(15.0)
@@ -58,13 +63,18 @@ func detonate() -> void:
 	for body in overlapping_bodies:
 		if body.is_in_group("enemy") and body.has_method("die"):
 			body.die() 
-		area.monitoring = false 
+			
+	# Matikan monitoring dengan aman di luar loop
+	area.set_deferred("monitoring", false) 
+	
 	if aura_visual != null:
 		aura_visual.hide()
 	$Sprite2D.hide() 
+	
 	var particles = get_node_or_null("ExplosionParticles")
 	if particles != null:
 		particles.emitting = true
+		
 	await get_tree().create_timer(1.0).timeout
 	queue_free()
 
@@ -84,10 +94,6 @@ func restore_surrounding_tiles() -> void:
 			var current_id = tilemap.get_cell_source_id(target_cell)
 			
 			if current_id == -1:
-				# Tanyakan gambar aslinya ke GridManager
 				var original_coords = grid_manager.get_original_floor_coords(target_cell)
-				
-				# Jika jawabannya bukan Vector2i(-1, -1), berarti area itu dulunya lantai
 				if original_coords != Vector2i(-1, -1):
-					# Kembalikan lantai menggunakan gambar spesifiknya!
 					tilemap.set_cell(target_cell, floor_id, original_coords)

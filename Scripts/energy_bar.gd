@@ -10,9 +10,6 @@ func _set_energy(new_energy: int) -> void:
 	energy = min(max_value, new_energy)
 	value = energy
 	
-	if energy <= 0:
-		queue_free()
-	
 	if damage_bar != null and timer != null:
 		if energy < prev_energy:
 			timer.start()
