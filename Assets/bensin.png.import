@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cu1r3swwcx4x"
-path="res://.godot/imported/Pilot.png-d2f5a252fbb4e896810cde5d9e9a0492.ctex"
+uid="uid://dymsyggbr70f5"
+path="res://.godot/imported/bensin.png-5569681c20812af1606bab0c4e8ed8ab.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Pilot.png"
-dest_files=["res://.godot/imported/Pilot.png-d2f5a252fbb4e896810cde5d9e9a0492.ctex"]
+source_file="res://Assets/bensin.png"
+dest_files=["res://.godot/imported/bensin.png-5569681c20812af1606bab0c4e8ed8ab.ctex"]
 
 [params]
 

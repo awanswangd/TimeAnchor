@@ -1,5 +1,7 @@
 extends StaticBody2D
-var tentacle_hp: int = 3
+var tentacle_hp: int = 2
+@export var sfx_tentacle: AudioStream
+@export var sfx_tentacle_die: AudioStream
 
 func _ready() -> void:
 	add_to_group("enemy") 
@@ -18,7 +20,11 @@ func die() -> void:
 	if tentacle_hp > 0:
 		if gm != null and gm.has_method("tentacle_hit"):
 			gm.tentacle_hit()
+		if AudioManager.has_method("play_sfx"):
+			AudioManager.play_sfx(sfx_tentacle, true)
 	if tentacle_hp <= 0:
+		if AudioManager.has_method("play_sfx"):
+			AudioManager.play_sfx(sfx_tentacle_die, true)
 		if gm != null and gm.has_method("tentacle_destroyed"):
 			gm.tentacle_destroyed()
 		queue_free()

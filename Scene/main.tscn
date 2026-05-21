@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=4 uid="uid://cwnnimadu5oey"]
+[gd_scene load_steps=19 format=4 uid="uid://cwnnimadu5oey"]
 
 [ext_resource type="Texture2D" uid="uid://kdh850an806a" path="res://Assets/tilemap@2x.png" id="1_3pt4j"]
 [ext_resource type="PackedScene" uid="uid://bckxvmvwipqqm" path="res://Scene/black_hole.tscn" id="2_hspdg"]
@@ -13,6 +13,7 @@
 [ext_resource type="PackedScene" uid="uid://bbcxsqq6pge3p" path="res://Scene/HealthBar.tscn" id="9_3pt4j"]
 [ext_resource type="PackedScene" uid="uid://kq33rjky8c81" path="res://Scene/SkillUI.tscn" id="9_c2iwn"]
 [ext_resource type="PackedScene" uid="uid://ddysq8c7hxaty" path="res://Scene/EnergyBar.tscn" id="10_7y4ci"]
+[ext_resource type="FontFile" uid="uid://clma3d6ui3ry3" path="res://Font/Nasalization Rg.otf" id="12_j63at"]
 [ext_resource type="PackedScene" uid="uid://7s7cny7wu3so" path="res://Scene/pause_menu.tscn" id="14_hspdg"]
 
 [sub_resource type="TileMapPattern" id="TileMapPattern_0sxm5"]
@@ -116,10 +117,10 @@ metadata/_edit_use_anchors_ = true
 texture_filter = 1
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.5
-anchor_top = 0.428571
-anchor_right = 0.5
-anchor_bottom = 0.428571
+anchor_left = 0.49375
+anchor_top = 0.642857
+anchor_right = 0.50625
+anchor_bottom = 0.642857
 offset_left = -43.5
 offset_top = -11.5
 offset_right = 43.5
@@ -128,6 +129,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 2
+theme_override_fonts/font = ExtResource("12_j63at")
 theme_override_font_sizes/font_size = 15
 text = "Health: xxx"
 metadata/_edit_use_anchors_ = true
@@ -150,14 +152,15 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -44.0
-offset_top = -12.5
-offset_right = 44.0
-offset_bottom = 10.5
+offset_left = -48.0
+offset_top = -10.5
+offset_right = 48.0
+offset_bottom = 12.5
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 2
+theme_override_fonts/font = ExtResource("12_j63at")
 theme_override_font_sizes/font_size = 15
 text = "Energy: xxx"
 
@@ -176,6 +179,7 @@ offset_top = 24.0
 offset_right = 51.5
 offset_bottom = 58.0
 grow_horizontal = 2
+theme_override_fonts/font = ExtResource("12_j63at")
 theme_override_font_sizes/font_size = 24
 
 [node name="Sprint_Button_Prompt" type="Label" parent="UIManager/GameplayHUD"]
@@ -184,6 +188,7 @@ offset_left = 62.0
 offset_top = 71.0
 offset_right = 109.0
 offset_bottom = 94.0
+theme_override_fonts/font = ExtResource("12_j63at")
 text = "Sprint"
 
 [node name="Label" type="Label" parent="UIManager/GameplayHUD"]
@@ -195,6 +200,7 @@ anchor_right = 0.0303819
 anchor_bottom = 0.17284
 offset_right = 71.8542
 offset_bottom = 23.0
+theme_override_fonts/font = ExtResource("12_j63at")
 text = "Objective"
 metadata/_edit_use_anchors_ = true
 
@@ -203,14 +209,16 @@ layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.00173611
 anchor_top = 0.247685
-anchor_right = 0.226736
-anchor_bottom = 0.248
+anchor_right = 0.277951
+anchor_bottom = 0.315901
 offset_top = -22.5
 offset_right = -0.200012
 offset_bottom = 23.296
 grow_vertical = 2
+theme_override_fonts/font = ExtResource("12_j63at")
 theme_override_font_sizes/font_size = 24
 text = "Objective Text"
+autowrap_mode = 2
 metadata/_edit_use_anchors_ = true
 
 [node name="EndgameOverlay" type="ColorRect" parent="UIManager"]
@@ -221,6 +229,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 color = Color(1, 1, 1, 0)
 
 [node name="GameOverPanel" type="Panel" parent="UIManager"]
@@ -244,6 +253,7 @@ offset_right = 43.5
 offset_bottom = 11.5
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_fonts/font = ExtResource("12_j63at")
 theme_override_font_sizes/font_size = 32
 text = "SYSTEM FAILURE. WARP GAGAL."
 
@@ -264,11 +274,13 @@ theme_override_constants/separation = 34
 
 [node name="RestartButton" type="Button" parent="UIManager/GameOverPanel/HBoxContainer"]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("12_j63at")
 theme_override_font_sizes/font_size = 24
 text = "RESTART MISSION"
 
 [node name="MenuButton" type="Button" parent="UIManager/GameOverPanel/HBoxContainer"]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("12_j63at")
 theme_override_font_sizes/font_size = 24
 text = "RETURN TO MENU"
 
@@ -295,6 +307,7 @@ offset_right = 20.0
 offset_bottom = 11.5
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_fonts/font = ExtResource("12_j63at")
 theme_override_font_sizes/font_size = 24
 text = "MISSION SUCCESS! WARP BERHASIL!"
 
@@ -315,11 +328,13 @@ theme_override_constants/separation = 34
 
 [node name="WinRestartButton" type="Button" parent="UIManager/WinningPanel/HBoxContainer"]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("12_j63at")
 theme_override_font_sizes/font_size = 24
 text = "RESTART MISSION"
 
 [node name="WinMenuButton" type="Button" parent="UIManager/WinningPanel/HBoxContainer"]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("12_j63at")
 theme_override_font_sizes/font_size = 24
 text = "RETURN TO MENU"
 

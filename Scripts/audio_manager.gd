@@ -23,7 +23,6 @@ func stop_bgm() -> void:
 func pause_bgm(is_paused: bool) -> void:
 	bgm_player.stream_paused = is_paused
 
-
 func play_sfx(stream: AudioStream, randomize_pitch: bool = false) -> void:
 	if stream == null: return
 	var sfx_player = AudioStreamPlayer.new()

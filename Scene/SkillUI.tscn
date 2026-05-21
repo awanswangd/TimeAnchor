@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="uid://kq33rjky8c81"]
+[gd_scene load_steps=5 format=3 uid="uid://kq33rjky8c81"]
 
 [ext_resource type="Script" uid="uid://b56trwipjra6j" path="res://Scripts/skill_ui.gd" id="1_7irep"]
 [ext_resource type="Texture2D" uid="uid://dys2n63g3mh6g" path="res://Assets/Anchor_Icon.png" id="2_5rprg"]
+[ext_resource type="FontFile" uid="uid://clma3d6ui3ry3" path="res://Font/Nasalization Rg.otf" id="2_gtsdv"]
 [ext_resource type="Texture2D" uid="uid://bwhwop7r7oyxh" path="res://Assets/Dash_Icon.png" id="3_gtsdv"]
 
 [node name="SkillUI" type="MarginContainer" groups=["skill_ui"]]
@@ -23,8 +24,11 @@ theme_override_constants/separation = 20
 layout_mode = 2
 
 [node name="Label" type="Label" parent="HBoxContainer/AnchorBox"]
+texture_filter = 1
 layout_mode = 2
-text = "Left Click"
+theme_override_fonts/font = ExtResource("2_gtsdv")
+theme_override_font_sizes/font_size = 14
+text = "Klik Kiri"
 horizontal_alignment = 1
 
 [node name="AnchorBar" type="TextureProgressBar" parent="HBoxContainer/AnchorBox"]
@@ -40,8 +44,11 @@ tint_progress = Color(0, 0, 0, 0.862745)
 layout_mode = 2
 
 [node name="Label" type="Label" parent="HBoxContainer/DashBox"]
+texture_filter = 1
 layout_mode = 2
-text = "Double Tap"
+theme_override_fonts/font = ExtResource("2_gtsdv")
+theme_override_font_sizes/font_size = 14
+text = "Klik Kanan"
 horizontal_alignment = 1
 
 [node name="DashBar" type="TextureProgressBar" parent="HBoxContainer/DashBox"]

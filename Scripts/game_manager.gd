@@ -7,7 +7,7 @@ var current_phase: Phase = Phase.ACT_1_TUTORIAL
 @export var tutorial_holes_amount: int = 5 #Jumlah lubang di Babak 1
 @export var tutorial_enemy_amount: int = 3 #Jumlah musuh di Babak 1
 @export var survival_duration: float = 120 #2 Menit untuk Babak 2
-@export var warp_duration: float = 60 #Waktu nahan Black Hole di Babak 3
+@export var warp_duration: float = 90 #Waktu nahan Black Hole di Babak 3
 
 @export_category("Audio")
 @export var bgm_act_1: AudioStream #Musik misterius/sepi
@@ -22,13 +22,13 @@ var is_game_active: bool = false
 var dialog_tentacle_hit_played: bool = false
 var dialog_60s_played: bool = false 
 var dialog_30s_played: bool = false
-var dialog_10s_played: bool = false
+var dialog_15s_played: bool = false
 var dialog_dash_played: bool = false
 var dialog_tambal_lantai: bool = false
 
 var ui_manager: CanvasLayer
 var dialog_scene = preload("res://Scene/DialogOverlay.tscn")
-var tentacle_scene = preload("res://Scene/Tentacle.tscn") 
+var tentacle_scene = preload("res://Scene/tentacle.tscn") 
 
 func _ready() -> void:
 	get_tree().paused = false
@@ -93,7 +93,7 @@ func process_act_1(_delta: float) -> void:
 					])
 					break
 	if ui_manager != null and ui_manager.has_method("update_objective"):
-		ui_manager.update_objective("BABAK 1: Habisi %d Musuh & Tambal %d Lubang!" % [enemies_left, holes_left])
+		ui_manager.update_objective("Habisi %d Musuh\nTambal %d Lubang!" % [enemies_left, holes_left])
 	
 	if enemies_left <= 0 and holes_left <= 0:
 		start_act_2()
@@ -132,9 +132,9 @@ func start_act_2() -> void:
 	munculkan_dialog([
 		"Pilot|Kerja Bagus Kapten! Mesin belakang sudah beres!",
 		"Pilot|T-Tunggu Kapten! Sensor mendeteksi gelombang anomali lagi! MEREKA DATANG LEBIH BANYAK!!",
-		"Pilot|Teleportasi akan siap dalam 2 menit. Saya telah membuka kunci Detonator untuk Anda.",
+		"Pilot|Teleportasi akan siap dalam 2 menit. Saya telah membuka kunci Remote Detonator.",
 		"Kapten|Bagus. Aku bisa memasang Time Anchor dan meledakkannya untuk membasmi mereka!",
-		"Kapten|Pasang Anchor, pancing mereka mendekat, lalu LEDAKKAN! Aku tidak akan mati di sini!"
+		"Kapten|Pasang Anchor, pancing mereka masuk ke lingkaran, lalu tekan (SPASI) untuk meledakkannya!"
 	])
 
 
@@ -154,8 +154,8 @@ func process_act_2(delta: float) -> void:
 		dialog_30s_played = true
 		munculkan_dialog(["Pilot|30 Detik sebelum warping! Tahan posisi Kapten!"])
 		
-	if current_timer <= 10.0 and not dialog_10s_played:
-		dialog_10s_played = true
+	if current_timer <= 15.0 and not dialog_15s_played:
+		dialog_15s_played = true
 		AudioManager.stop_bgm()
 		AudioManager.play_bgm(bgm_act_3)
 		munculkan_dialog(["Pilot|Gawat! Radar mendeteksi fluktuasi energi ruang angkasa yang aneh tepat di belakang kapal!"])
@@ -201,8 +201,8 @@ func process_act_3(delta: float) -> void:
 	
 	var player = get_tree().get_first_node_in_group("player")
 	if player != null and "blackhole_pull" in player:
-		#Makin kecil current_timer, nilainya makin gede. Max pull bisa sampai 140
-		player.blackhole_pull = 20.0 + (60.0 - current_timer) * 2.0
+		#Tarikan perlahan memancar dari 20 sampai maksimal sekitar 155 di detik akhir
+		player.blackhole_pull = 20.0 + (warp_duration - current_timer) * 1.5
 		
 	if current_timer <= 0:
 		if tentacles_left <= 0:

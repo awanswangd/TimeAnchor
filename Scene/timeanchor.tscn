@@ -7,7 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://dqjnxywh4o3sh" path="res://Assets/Time_Anchor.png" id="5_txlc8"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_6omjd"]
-radius = 128.004
+radius = 128.016
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5x01l"]
 

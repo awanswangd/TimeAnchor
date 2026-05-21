@@ -1,8 +1,13 @@
-[gd_scene load_steps=4 format=3 uid="uid://bur8sbp3qbgql"]
+[gd_scene load_steps=7 format=3 uid="uid://bur8sbp3qbgql"]
 
 [ext_resource type="Script" uid="uid://bp14rno1pri66" path="res://Scripts/main_menu.gd" id="1_ftydy"]
 [ext_resource type="AudioStream" uid="uid://dau7djt5gqovh" path="res://Audio/Main_Menu.mp3" id="2_hii65"]
 [ext_resource type="Texture2D" uid="uid://clxq5bynemhm5" path="res://Assets/Main_MenuBG.png" id="3_hii65"]
+[ext_resource type="FontFile" uid="uid://clma3d6ui3ry3" path="res://Font/Nasalization Rg.otf" id="4_kqsxi"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_pvidh"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hptlk"]
 
 [node name="MainMenu" type="Control"]
 process_mode = 3
@@ -39,15 +44,16 @@ offset_left = 76.9996
 offset_right = 179.0
 offset_bottom = 36.0004
 grow_horizontal = 2
+theme_override_fonts/font = ExtResource("4_kqsxi")
 theme_override_font_sizes/font_size = 42
 text = "Time Anchor"
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.8125
+anchor_left = 0.811632
 anchor_top = 0.500772
-anchor_right = 0.832465
+anchor_right = 0.83941
 anchor_bottom = 0.500772
 offset_left = 12.0
 offset_top = -99.5
@@ -60,21 +66,25 @@ metadata/_edit_use_anchors_ = true
 
 [node name="PlayButton" type="Button" parent="VBoxContainer"]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("4_kqsxi")
 theme_override_font_sizes/font_size = 32
+theme_override_styles/normal = SubResource("StyleBoxTexture_pvidh")
 text = "Play"
-alignment = 2
 
 [node name="SettingButton" type="Button" parent="VBoxContainer"]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("4_kqsxi")
 theme_override_font_sizes/font_size = 32
+theme_override_styles/normal = SubResource("StyleBoxEmpty_hptlk")
 text = "Settings"
-alignment = 2
+alignment = 0
 
 [node name="ExitButton" type="Button" parent="VBoxContainer"]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("4_kqsxi")
 theme_override_font_sizes/font_size = 32
+theme_override_styles/normal = SubResource("StyleBoxEmpty_hptlk")
 text = "Exit"
-alignment = 2
 
 [node name="SettingPanel" type="Panel" parent="."]
 process_mode = 3
@@ -97,6 +107,7 @@ offset_left = 1766.66
 offset_top = 3529.59
 offset_right = 1828.66
 offset_bottom = 3566.59
+theme_override_fonts/font = ExtResource("4_kqsxi")
 theme_override_font_sizes/font_size = 27
 text = "BGM"
 
@@ -142,6 +153,7 @@ offset_left = 216.0
 offset_top = 160.0
 offset_right = 262.0
 offset_bottom = 197.0
+theme_override_fonts/font = ExtResource("4_kqsxi")
 theme_override_font_sizes/font_size = 27
 text = "SFX"
 

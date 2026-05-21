@@ -150,5 +150,6 @@ animation = &"walk_side"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 modulate = Color(0.96189, 0, 0.415493, 1)
+light_mask = 0
 position = Vector2(15, -4)
 shape = SubResource("RectangleShape2D_rnh73")

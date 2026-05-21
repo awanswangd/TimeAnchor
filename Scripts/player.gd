@@ -30,7 +30,7 @@ var is_invincible: bool = false
 @export_group("Dash Settings")
 @export var dash_speed_multiplier: float = 3.5 
 @export var dash_duration: float = 0.2 
-@export var dash_cooldown_time: float = 2.5 
+@export var dash_cooldown_time: float = 1.5 
 @export var dash_energy_cost: int = 1 
 
 var is_dashing: bool = false
@@ -98,10 +98,12 @@ func _physics_process(delta: float) -> void:
 			var hb = get_tree().get_first_node_in_group("health_bar")
 			if hb != null:
 				hb.set_deferred("health", current_health)
-
-func _unhandled_input(event: InputEvent) -> void:
-	if event.is_action_pressed("place_anchor"):
+	if Input.is_action_just_pressed("place_anchor"):
 		try_place_anchor()
+		
+	if Input.is_action_just_pressed("dash"):
+		if current_cooldown <= 0 and current_energy >= dash_energy_cost and not is_dashing:
+			start_dash()
 
 func handle_movement(delta: float) -> void:
 	if is_dashing:
@@ -179,7 +181,7 @@ func start_dash() -> void:
 	
 	var skill_ui = get_tree().get_first_node_in_group("skill_ui")
 	if skill_ui != null and skill_ui.has_method("start_dash_cooldown"):
-		skill_ui.start_dash_cooldown()
+		skill_ui.start_dash_cooldown(dash_cooldown_time)
 	
 	current_energy -= dash_energy_cost
 	energy_changed.emit(current_energy)
@@ -214,7 +216,7 @@ func try_place_anchor() -> void:
 	
 	var skill_ui = get_tree().get_first_node_in_group("skill_ui")
 	if skill_ui != null and skill_ui.has_method("start_anchor_cooldown"):
-		skill_ui.start_anchor_cooldown()
+		skill_ui.start_anchor_cooldown(anchor_cooldown_time)
 
 func take_damage(amount: int) -> void:
 	if is_invincible:

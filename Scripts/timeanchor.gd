@@ -34,16 +34,30 @@ func _on_aura_area_body_exited(body: Node2D) -> void:
 		body.apply_time_warp(false)
 
 func setup_aura_visual_size() -> void:
-	if aura_visual == null or aura_visual.texture == null:
-		return
 	var safe_diameter_in_pixels = (radius * 2 + 1) * tile_size
-	var original_texture_size = aura_visual.texture.get_size().x
-	var required_scale = safe_diameter_in_pixels / original_texture_size
-	aura_visual.scale = Vector2(required_scale, required_scale)
+	var safe_radius = safe_diameter_in_pixels / 2.0 
+	
+	if aura_visual != null and aura_visual.texture != null:
+		var original_texture_size = aura_visual.texture.get_size().x
+		var required_scale = safe_diameter_in_pixels / original_texture_size
+		aura_visual.scale = Vector2(required_scale, required_scale)
+		
+	var collision_node = get_node_or_null("AuraArea/CollisionShape2D")
+	if collision_node != null:
+		var new_shape = CircleShape2D.new()
+		new_shape.radius = safe_radius
+		collision_node.shape = new_shape
 
 func detonate() -> void:
 	has_detonated = true
+	var tween = create_tween().set_loops(5)
+	tween.tween_property($Sprite2D, "modulate", Color.RED, 0.1)
+	tween.tween_property($Sprite2D, "modulate", Color.WHITE, 0.1)
 	
+	if aura_visual != null:
+		var tween_aura = create_tween()
+		tween_aura.tween_property(aura_visual, "modulate", Color(1.0, 0.2, 0.2, 0.8), 0.8)
+		tween_aura.parallel().tween_property(aura_visual, "scale", aura_visual.scale * 1.1, 0.8)
 	AudioManager.play_sfx(sfx_explosion_suspense, true)
 	await get_tree().create_timer(1.0).timeout
 	AudioManager.play_sfx(sfx_explosion, true)
