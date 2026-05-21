@@ -212,44 +212,65 @@ func process_act_3(delta: float) -> void:
 
 func trigger_game_over_warp_failed() -> void:
 	set_process(false)
-	
 	var cam = get_tree().get_first_node_in_group("camera")
 	if cam != null and cam.has_method("apply_shake"):
 		cam.apply_shake(25.0)
 
 	if black_hole_visual != null:
 		var tween_bh = create_tween()
-		tween_bh.tween_property(black_hole_visual, "scale", Vector2(25.0, 25.0), 0.6) # Jadi raksasa seketika!
+		tween_bh.tween_property(black_hole_visual, "scale", Vector2(25.0, 25.0), 0.6) 
 
-	munculkan_dialog([
-		"Pilot|KAPTEN! Waktu habis! Integritas lambung 0%! Mesin warp mati!",
-		"System|CRITICAL ERROR. HULL BREACH DETECTED. WELCOME TO THE VOID."
-	], false) 
+	var dialog1 = munculkan_dialog([
+		"Pilot|KAPTEN! Waktu habis! Integritas lambung 0%! Mesin warp mati!"
+	], true, true) 
 	
-	await get_tree().create_timer(3.0).timeout
+	if dialog1 != null:
+		await dialog1.tree_exited
 	
-	if ui_manager != null and ui_manager.has_method("play_void_defeat_cinematic"):
-		ui_manager.play_void_defeat_cinematic()
+	if ui_manager != null and ui_manager.has_method("fade_to_black"):
+		await ui_manager.fade_to_black()
+		
+	var dialog2 = munculkan_dialog([
+		"System|CRITICAL ERROR. HULL BREACH DETECTED. WELCOME TO THE VOID.",
+		"????|A k h i r n y a . . .",
+		"Things|W̸E̵L̵C̷O̸M̵E̴ ̸T̶O̴ ̸T̸H̸E̶ ̴V̴O̸I̵D̵,̴ ̵C̶A̵P̵T̷A̸I̸N̴.̸"
+	], false, false) 
+	
+	if dialog2 != null:
+		await dialog2.tree_exited
+		
+	if ui_manager != null and ui_manager.has_method("show_lose_panel_final"):
+		ui_manager.show_lose_panel_final()
 
 func trigger_you_win() -> void:
 	set_process(false)
 	
-	munculkan_dialog([
+	var dialog1 = munculkan_dialog([
 		"Pilot|Luar biasa Kapten! Semua cengkeraman entitas kosmik itu sudah hancur!",
 		"Kapten|Jalur sudah bersih! Tarik tuasnya sekarang!!",
-		"Pilot|Warping in 3... 2... 1... KITA BERHASIL LOLOS!",
-		"...",
-		"k̸͚̆ą̶̒l̶̲͗ĭ̷͍ã̵̟n̵̨̚ ̶̥̓b̶̫̅e̷̱̓r̷̠̆ű̸̳n̵̳͆t̴͈̉ǘ̸̺n̵̦̔g̵̝̓"
-	], false)
+		"Pilot|Warping in 3... 2... 1... KITA BERHASIL LOLOS!"
+	], true, true)
 	
-	await get_tree().create_timer(4.5).timeout
+	if dialog1 != null:
+		await dialog1.tree_exited
 	
 	var cam = get_tree().get_first_node_in_group("camera")
 	if cam != null and cam.has_method("apply_shake"):
-		cam.apply_shake(8.0)
+		cam.apply_shake(12.0)
 		
-	if ui_manager != null and ui_manager.has_method("play_victory_cinematic"):
-		ui_manager.play_victory_cinematic()
+	if ui_manager != null and ui_manager.has_method("fade_to_white"):
+		await ui_manager.fade_to_white()
+		
+	var dialog2 = munculkan_dialog([
+		"???|. . . . .",
+		"Thing|k̸͚̆ą̶̒l̶̲͗ĭ̷͍ã̵̟n̵̨̚ ̶̥̓b̶̫̅e̷̱̓r̷̠̆ű̸̳n̵̳͆t̴͈̉ǘ̸̺n̵̦̔g̵̝̓.̶.̷.̸ ̸t̶a̷p̵i̴ ̴i̴n̴i̸ ̶b̷e̴l̷u̷m̴ ̷b̷e̴r̵a̶k̵h̴i̴r̷."
+	], false, false)
+	
+	if dialog2 != null:
+		await dialog2.tree_exited
+		
+	if ui_manager != null and ui_manager.has_method("show_win_panel_final"):
+		ui_manager.show_win_panel_final()
 
 func spawn_tentacles() -> void:
 	var arena = get_tree().get_first_node_in_group("arena")
@@ -281,8 +302,8 @@ func tentacle_hit() -> void:
 		dialog_tentacle_hit_played = true
 		await get_tree().create_timer(1.5).timeout
 		munculkan_dialog([
-			"Kapten|Sialan! Kulit kosmik ini keras sekali!",
-			"Kapten|Satu ledakan tidak cukup. Aku harus meledakkannya berkali-kali sampai hancur!"
+			"Kapten|Sialan! Tentakel Makhluk ini keras sekali!",
+			"Kapten|Satu ledakan tidak cukup. Aku harus meledakkannya lagi sampai hancur!"
 		], true)
 
 func tentacle_destroyed() -> void:
@@ -292,20 +313,26 @@ func tentacle_destroyed() -> void:
 			ui_manager.show_survival_objective()
 		
 
-func munculkan_dialog(teks_array: Array, kembalikan_hud: bool = true) -> void:
+func munculkan_dialog(teks_array: Array, kembalikan_hud: bool = true, unpause_after: bool = true) -> Node:
 	if dialog_scene != null:
 		var dialog_instance = dialog_scene.instantiate()
 		dialog_instance.dialog_queue = teks_array
+		
 		get_parent().add_child.call_deferred(dialog_instance)
 		
 		if ui_manager != null and ui_manager.has_method("hide_hud"):
 			ui_manager.hide_hud()
 			
-		if kembalikan_hud:
-			dialog_instance.tree_exited.connect(func():
-				if ui_manager != null and ui_manager.has_method("show_hud"):
-					ui_manager.show_hud()
-			)
+		dialog_instance.tree_exited.connect(func():
+			if kembalikan_hud and ui_manager != null and ui_manager.has_method("show_hud"):
+				ui_manager.show_hud()
+			
+			if unpause_after:
+				get_tree().paused = false
+		)
+		
+		return dialog_instance
+	return null
 
 func mulai_monolog_tutorial() -> void:
 	munculkan_dialog([

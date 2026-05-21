@@ -96,44 +96,41 @@ func show_hud() -> void:
 	if gameplay_hud != null:
 		gameplay_hud.show()
 
-func play_victory_cinematic() -> void:
+func fade_to_white() -> void:
 	hide_hud()
-	get_tree().paused = true 
-	
-	endgame_overlay.color = Color(1, 1, 1, 0) 
+	get_tree().paused = true
+	endgame_overlay.color = Color(1, 1, 1, 0)
 	endgame_overlay.show()
 	
-	var tween = create_tween() 
-	tween.tween_property(endgame_overlay, "color:a", 1.0, 0.4)
-	
-	await get_tree().create_timer(0.5, true).timeout
-	
+	var tween = create_tween()
+	tween.tween_property(endgame_overlay, "color:a", 1.0, 0.5)
+	await tween.finished 
+
+func show_win_panel_final() -> void:
 	if you_win_panel != null:
 		you_win_panel.show()
-		
-	var tween_fade = create_tween()
-	tween_fade.tween_property(endgame_overlay, "color:a", 0.0, 1.5)
 	
+	var tween_fade = create_tween()
+	tween_fade.tween_property(endgame_overlay, "color:a", 0.0, 1.0)
 	await tween_fade.finished
 	endgame_overlay.hide()
 
-func play_void_defeat_cinematic() -> void:
+func fade_to_black() -> void:
 	hide_hud()
 	get_tree().paused = true
-	
 	endgame_overlay.color = Color(0.5, 0, 0, 0) 
 	endgame_overlay.show()
 	
-	var tween_glitch = create_tween()
-	tween_glitch.tween_property(endgame_overlay, "color:a", 0.8, 0.1)
-	tween_glitch.tween_property(endgame_overlay, "color:a", 0.2, 0.1)
-	tween_glitch.tween_property(endgame_overlay, "color:a", 1.0, 0.5) 
-	tween_glitch.parallel().tween_property(endgame_overlay, "color", Color(0, 0, 0, 1), 0.7) 
-	
-	await get_tree().create_timer(1.0, true).timeout
-	
+	var tween = create_tween()
+	tween.tween_property(endgame_overlay, "color:a", 0.8, 0.1)
+	tween.tween_property(endgame_overlay, "color:a", 0.2, 0.1)
+	tween.tween_property(endgame_overlay, "color:a", 1.0, 0.4)
+	tween.parallel().tween_property(endgame_overlay, "color", Color(0, 0, 0, 1), 0.5) 
+	await tween.finished 
+
+func show_lose_panel_final() -> void:
 	if game_over_panel != null:
-		var title_label = game_over_panel.get_node_or_null("TitleLabel") # Sesuaikan nama node teksmu
+		var title_label = game_over_panel.get_node_or_null("TitleLabel") 
 		if title_label != null:
 			title_label.text = "TERSEDOT KE DALAM VOID\n[BAD ENDING]"
 		game_over_panel.show()

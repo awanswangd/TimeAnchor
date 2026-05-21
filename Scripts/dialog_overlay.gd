@@ -5,14 +5,21 @@ extends CanvasLayer
 @onready var sprite_system: Sprite2D = $System
 @onready var sprite_kapten: Sprite2D = $Kapten
 @onready var sprite_pilot: Sprite2D = $Pilot
+@onready var siluet_a_thing_win: Sprite2D = $Siluet_AThing_Win
+@onready var a_thing_win: Sprite2D = $AThing_Win
+@onready var siluet_a_thing_lose: Sprite2D = $Siluet_AThing_Lose
+@onready var a_thing_lose: Sprite2D = $AThing_Lose
 #Masukkan teks ceritanya pake Format: Nama|Isi Teks
-
 var dialog_queue: Array = []
 
 func _ready() -> void:
 	if sprite_system != null: sprite_system.hide()
 	if sprite_kapten != null: sprite_kapten.hide()
 	if sprite_pilot != null: sprite_pilot.hide()
+	if siluet_a_thing_win != null: siluet_a_thing_win.hide()
+	if a_thing_win != null: a_thing_win.hide()
+	if siluet_a_thing_lose != null: siluet_a_thing_lose.hide()
+	if a_thing_lose != null: a_thing_lose.hide()
 	get_tree().paused = true
 	var ui = get_tree().get_first_node_in_group("ui_manager")
 	if ui != null and ui.has_method("hide_hud"):
@@ -23,6 +30,10 @@ func next_dialog_line() -> void:
 	if sprite_system != null: sprite_system.hide()
 	if sprite_kapten != null: sprite_kapten.hide()
 	if sprite_pilot != null: sprite_pilot.hide()
+	if siluet_a_thing_win != null: siluet_a_thing_win.hide()
+	if a_thing_win != null: a_thing_win.hide()
+	if siluet_a_thing_lose != null: siluet_a_thing_lose.hide()
+	if a_thing_lose != null: a_thing_lose.hide()
 	if dialog_queue.size() > 0:
 		var current_line = dialog_queue.pop_front()
 		
@@ -36,6 +47,14 @@ func next_dialog_line() -> void:
 				if sprite_kapten != null: sprite_kapten.show()
 			"Pilot":
 				if sprite_pilot != null: sprite_pilot.show()
+			"Thing":
+				if a_thing_win != null: a_thing_win.show()
+			"???":
+				if siluet_a_thing_win != null: siluet_a_thing_win.show()
+			"Things":
+				if a_thing_lose != null: a_thing_lose.show()
+			"????":
+				if siluet_a_thing_lose != null: siluet_a_thing_lose.show()
 		if parts.size() == 2:
 			name_label.text = parts[0]
 			text_label.text = parts[1]
@@ -48,10 +67,6 @@ func next_dialog_line() -> void:
 func end_dialog() -> void:
 	$DialogBox.hide()
 	await get_tree().create_timer(0.1).timeout
-	var ui = get_tree().get_first_node_in_group("ui_manager")
-	if ui != null and ui.has_method("show_hud"):
-		ui.show_hud()
-	get_tree().paused = false
 	queue_free()
 
 func _input(event: InputEvent) -> void:
