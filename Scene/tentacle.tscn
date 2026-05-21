@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://bq113iidyt11g"]
+[gd_scene load_steps=15 format=3 uid="uid://bq113iidyt11g"]
 
 [ext_resource type="Script" uid="uid://dtc8s7v6jjxiu" path="res://Scripts/tentacle.gd" id="1_fjwje"]
 [ext_resource type="Texture2D" uid="uid://colvia5ur1q17" path="res://Assets/Sprite_Tentakel_Baru.png" id="2_pge1m"]
@@ -68,7 +68,15 @@ animations = [{
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_gdsvx"]
-size = Vector2(147, 217.5)
+size = Vector2(147, 242.5)
+
+[sub_resource type="Gradient" id="Gradient_pge1m"]
+offsets = PackedFloat32Array(0, 0.981707)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_ky733"]
+gradient = SubResource("Gradient_pge1m")
+fill_from = Vector2(0.563596, 0.469298)
+fill_to = Vector2(0.567982, 1)
 
 [node name="Tentacle" type="StaticBody2D"]
 position = Vector2(84, 26)
@@ -83,5 +91,10 @@ autoplay = "default"
 frame_progress = 0.750613
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(4.5, 112.75)
+position = Vector2(4.5, 100.25)
 shape = SubResource("RectangleShape2D_gdsvx")
+
+[node name="PointLight2D" type="PointLight2D" parent="."]
+position = Vector2(6.99999, 164)
+scale = Vector2(2.5625, 1.90625)
+texture = SubResource("GradientTexture2D_ky733")

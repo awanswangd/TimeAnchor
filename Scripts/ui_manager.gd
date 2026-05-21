@@ -7,14 +7,17 @@ extends CanvasLayer
 @onready var exit_button: Button = $GameOverPanel/HBoxContainer/MenuButton
 @onready var warp_timer_label: Label = $GameplayHUD/WarpTimerLabel
 @onready var you_win_panel: Panel = $WinningPanel
+@onready var win_restart_button: Button = $WinningPanel/HBoxContainer/WinRestartButton
+@onready var win_menu_button: Button = $WinningPanel/HBoxContainer/WinMenuButton
 @onready var health_bar: ProgressBar = $GameplayHUD/HealthBar
 @onready var energy_bar: ProgressBar = $GameplayHUD/EnergyBar
-
+@onready var endgame_overlay: ColorRect = $EndgameOverlay
 
 func _ready() -> void:
 	restart_button.pressed.connect(restart_game)
 	exit_button.pressed.connect(exit_game)
-	
+	if is_instance_valid(win_restart_button): win_restart_button.pressed.connect(restart_game)
+	if is_instance_valid(win_menu_button): win_menu_button.pressed.connect(exit_game)
 	var player = get_tree().get_first_node_in_group("player")
 	if player != null:
 		player.health_changed.connect(update_health)
@@ -82,6 +85,7 @@ func restart_game() -> void:
 	Transition.change_scene("res://Scene/main.tscn") 
 
 func exit_game() -> void:
+	get_tree().paused = false 
 	Transition.change_scene("res://Scene/main_menu.tscn")
 
 func hide_hud() -> void:
@@ -91,3 +95,45 @@ func hide_hud() -> void:
 func show_hud() -> void:
 	if gameplay_hud != null:
 		gameplay_hud.show()
+
+func play_victory_cinematic() -> void:
+	hide_hud()
+	get_tree().paused = true 
+	
+	endgame_overlay.color = Color(1, 1, 1, 0) 
+	endgame_overlay.show()
+	
+	var tween = create_tween() 
+	tween.tween_property(endgame_overlay, "color:a", 1.0, 0.4)
+	
+	await get_tree().create_timer(0.5, true).timeout
+	
+	if you_win_panel != null:
+		you_win_panel.show()
+		
+	var tween_fade = create_tween()
+	tween_fade.tween_property(endgame_overlay, "color:a", 0.0, 1.5)
+	
+	await tween_fade.finished
+	endgame_overlay.hide()
+
+func play_void_defeat_cinematic() -> void:
+	hide_hud()
+	get_tree().paused = true
+	
+	endgame_overlay.color = Color(0.5, 0, 0, 0) 
+	endgame_overlay.show()
+	
+	var tween_glitch = create_tween()
+	tween_glitch.tween_property(endgame_overlay, "color:a", 0.8, 0.1)
+	tween_glitch.tween_property(endgame_overlay, "color:a", 0.2, 0.1)
+	tween_glitch.tween_property(endgame_overlay, "color:a", 1.0, 0.5) 
+	tween_glitch.parallel().tween_property(endgame_overlay, "color", Color(0, 0, 0, 1), 0.7) 
+	
+	await get_tree().create_timer(1.0, true).timeout
+	
+	if game_over_panel != null:
+		var title_label = game_over_panel.get_node_or_null("TitleLabel") # Sesuaikan nama node teksmu
+		if title_label != null:
+			title_label.text = "TERSEDOT KE DALAM VOID\n[BAD ENDING]"
+		game_over_panel.show()

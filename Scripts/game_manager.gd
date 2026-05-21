@@ -6,7 +6,7 @@ var current_phase: Phase = Phase.ACT_1_TUTORIAL
 @export_category("Game Settings")
 @export var tutorial_holes_amount: int = 5 #Jumlah lubang di Babak 1
 @export var tutorial_enemy_amount: int = 3 #Jumlah musuh di Babak 1
-@export var survival_duration: float = 12 #2 Menit untuk Babak 2
+@export var survival_duration: float = 120 #2 Menit untuk Babak 2
 @export var warp_duration: float = 60 #Waktu nahan Black Hole di Babak 3
 
 @export_category("Audio")
@@ -19,11 +19,12 @@ var tentacles_left: int = 0
 var is_tutorial_setup_done: bool = false 
 var is_game_active: bool = false 
 
+var dialog_tentacle_hit_played: bool = false
+var dialog_60s_played: bool = false 
 var dialog_30s_played: bool = false
 var dialog_10s_played: bool = false
 var dialog_dash_played: bool = false
-var dialog_tentacle_hit_played: bool = false
-var dialog_60s_played: bool = false 
+var dialog_tambal_lantai: bool = false
 
 var ui_manager: CanvasLayer
 var dialog_scene = preload("res://Scene/DialogOverlay.tscn")
@@ -84,11 +85,16 @@ func process_act_1(_delta: float) -> void:
 					dialog_dash_played = true
 					munculkan_dialog([
 						"Kapten|Gawat, mereka menyadari keberadaanku!",
-						"Kapten|Aku harus cepat! Tekan tombol gerak 2x (Double Tap) untuk DASH dan menghindar!"
+						"Kapten|Aku harus cepat!",
+						"Pilot|Kapten! tabrak saja mereka ketika kamu sedang Dash!",
+						"Kapten|Hah?! Kamu gila ya?",
+						"Pilot|Tidak bukan begitu, Maksudku mereka hanyalah sisa dari masa lalu! Pelepasan energi seketika yang cukup kuat akan menghancurkan tubuh astral mereka!",
+						"Kapten|Begitu... baiklah akan kulakukan!"
 					])
 					break
 	if ui_manager != null and ui_manager.has_method("update_objective"):
 		ui_manager.update_objective("BABAK 1: Habisi %d Musuh & Tambal %d Lubang!" % [enemies_left, holes_left])
+	
 	if enemies_left <= 0 and holes_left <= 0:
 		start_act_2()
 
@@ -206,28 +212,42 @@ func process_act_3(delta: float) -> void:
 
 func trigger_game_over_warp_failed() -> void:
 	set_process(false)
-	if ui_manager != null and ui_manager.has_method("hide_hud"):
-		ui_manager.hide_hud()
+	
+	var cam = get_tree().get_first_node_in_group("camera")
+	if cam != null and cam.has_method("apply_shake"):
+		cam.apply_shake(25.0)
+
+	if black_hole_visual != null:
+		var tween_bh = create_tween()
+		tween_bh.tween_property(black_hole_visual, "scale", Vector2(25.0, 25.0), 0.6) # Jadi raksasa seketika!
+
 	munculkan_dialog([
 		"Pilot|KAPTEN! Waktu habis! Integritas lambung 0%! Mesin warp mati!",
 		"System|CRITICAL ERROR. HULL BREACH DETECTED. WELCOME TO THE VOID."
-		])
-		
-	if ui_manager.has_method("show_game_over"):
-		ui_manager.show_game_over()
-		set_process(false) 
-		if ui_manager != null and ui_manager.has_method("hide_hud"):
-			ui_manager.hide_hud()
+	], false) 
+	
+	await get_tree().create_timer(3.0).timeout
+	
+	if ui_manager != null and ui_manager.has_method("play_void_defeat_cinematic"):
+		ui_manager.play_void_defeat_cinematic()
 
 func trigger_you_win() -> void:
 	set_process(false)
+	
 	munculkan_dialog([
 		"Pilot|Luar biasa Kapten! Semua cengkeraman entitas kosmik itu sudah hancur!",
 		"Kapten|Jalur sudah bersih! Tarik tuasnya sekarang!!",
 		"Pilot|Warping in 3... 2... 1... KITA BERHASIL LOLOS!"
-	])
-	if ui_manager.has_method("show_win"): 
-		ui_manager.show_win()
+	], false)
+	
+	await get_tree().create_timer(4.5).timeout
+	
+	var cam = get_tree().get_first_node_in_group("camera")
+	if cam != null and cam.has_method("apply_shake"):
+		cam.apply_shake(8.0)
+		
+	if ui_manager != null and ui_manager.has_method("play_victory_cinematic"):
+		ui_manager.play_victory_cinematic()
 
 func spawn_tentacles() -> void:
 	var arena = get_tree().get_first_node_in_group("arena")
@@ -257,6 +277,7 @@ func spawn_tentacles() -> void:
 func tentacle_hit() -> void:
 	if not dialog_tentacle_hit_played:
 		dialog_tentacle_hit_played = true
+		await get_tree().create_timer(1.5).timeout
 		munculkan_dialog([
 			"Kapten|Sialan! Kulit kosmik ini keras sekali!",
 			"Kapten|Satu ledakan tidak cukup. Aku harus meledakkannya berkali-kali sampai hancur!"
@@ -286,9 +307,12 @@ func munculkan_dialog(teks_array: Array, kembalikan_hud: bool = true) -> void:
 
 func mulai_monolog_tutorial() -> void:
 	munculkan_dialog([
-		"Kapten|Sialan! Lambung kapal mulai runtuh ditarik anomali waktu!",
-		"Kapten|Aku harus bergerak pakai (W, A, S, D) dan pakai energi buat Dash (Double Tap).",
+		"Kapten|Sialan! Lambung kapal mulai runtuh akibat anomali waktu!",
+		"Kapten|Aku harus bergerak sekarang!",
+		"System|pakai (W, A, S, D) dan pakai energi buat Dash (Double Tap pada W, A, S, D) namun dash membutuhkan 1 energi.",
+		"System|Oh dan juga anda dapat menggunakan Sprint dengan menahan Shift! namun energi anda akan terkuras habis",
+		
 		"Kapten|Kalau ada lantai berlubang, aku bisa menambalnya dengan Time Anchor (Klik Kiri)...",
-		"Kapten|Tapi hati-hati, Anchor itu bakal meledak! Aku harus bertahan hidup!"
+		"System|Anda dapat memasang Anchor dengan klik kiri dimana saja! namun memasang Anchor membutuhkan 1 Energi"
 	])
 	Global.is_tutorial_done = true

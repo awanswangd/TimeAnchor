@@ -7,7 +7,10 @@ func _ready() -> void:
 
 func die() -> void:
 	tentacle_hp -= 1
+	modulate = Color.RED 
 	
+	var tween = create_tween()
+	tween.tween_property(self, "modulate", Color.WHITE, 0.2)
 	modulate = Color.PURPLE
 	await get_tree().create_timer(0.1).timeout
 	modulate = Color.WHITE

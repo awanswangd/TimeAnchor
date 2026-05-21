@@ -1,10 +1,140 @@
-[gd_scene load_steps=4 format=3 uid="uid://brttdp40xe7cm"]
+[gd_scene load_steps=22 format=3 uid="uid://brttdp40xe7cm"]
 
 [ext_resource type="Script" uid="uid://dbh0k4n30wohh" path="res://Scripts/time_warper.gd" id="1_vn7f8"]
-[ext_resource type="Texture2D" uid="uid://jwwvvdv83vdr" path="res://Assets/icon.svg" id="2_ka87d"]
+[ext_resource type="Shader" uid="uid://sn0w5u8rh6o8" path="res://Shaders/TimeWarper.gdshader" id="2_ka87d"]
+[ext_resource type="Texture2D" uid="uid://b1c5aqlpaagl7" path="res://Assets/space man.png" id="2_vn7f8"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_rnh73"]
+shader = ExtResource("2_ka87d")
+shader_parameter/ghost_color = Color(0, 0.8, 1, 1)
+shader_parameter/glow_intensity = 1.5
+shader_parameter/flicker_speed = 4.0
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ka87d"]
+atlas = ExtResource("2_vn7f8")
+region = Rect2(0, 500, 340, 500)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rnh73"]
+atlas = ExtResource("2_vn7f8")
+region = Rect2(340, 500, 340, 500)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tk07e"]
+atlas = ExtResource("2_vn7f8")
+region = Rect2(680, 500, 340, 500)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2rnn0"]
+atlas = ExtResource("2_vn7f8")
+region = Rect2(1020, 500, 340, 500)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fbgg7"]
+atlas = ExtResource("2_vn7f8")
+region = Rect2(1360, 500, 340, 500)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_62a6r"]
+atlas = ExtResource("2_vn7f8")
+region = Rect2(0, 0, 340, 500)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0higs"]
+atlas = ExtResource("2_vn7f8")
+region = Rect2(340, 0, 340, 500)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_cyt17"]
+atlas = ExtResource("2_vn7f8")
+region = Rect2(680, 0, 340, 500)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_w3m8u"]
+atlas = ExtResource("2_vn7f8")
+region = Rect2(1020, 0, 340, 500)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dxlmg"]
+atlas = ExtResource("2_vn7f8")
+region = Rect2(1360, 0, 340, 500)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_67ak4"]
+atlas = ExtResource("2_vn7f8")
+region = Rect2(0, 1000, 340, 500)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1mu8t"]
+atlas = ExtResource("2_vn7f8")
+region = Rect2(340, 1000, 340, 500)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5nipv"]
+atlas = ExtResource("2_vn7f8")
+region = Rect2(680, 1000, 340, 500)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rsuma"]
+atlas = ExtResource("2_vn7f8")
+region = Rect2(1020, 1000, 340, 500)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bhxuy"]
+atlas = ExtResource("2_vn7f8")
+region = Rect2(1360, 1000, 340, 500)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_fotw3"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ka87d")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rnh73")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tk07e")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2rnn0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fbgg7")
+}],
+"loop": true,
+"name": &"walk_back",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_62a6r")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0higs")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_cyt17")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_w3m8u")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dxlmg")
+}],
+"loop": true,
+"name": &"walk_front",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_67ak4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1mu8t")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5nipv")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rsuma")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bhxuy")
+}],
+"loop": true,
+"name": &"walk_side",
+"speed": 5.0
+}]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_rnh73"]
-size = Vector2(116, 111)
+size = Vector2(118, 132)
 
 [node name="TimeWarper" type="CharacterBody2D"]
 modulate = Color(0.96189, 0, 0.415493, 1)
@@ -12,11 +142,13 @@ position = Vector2(338, 287)
 scale = Vector2(0.5, 0.5)
 script = ExtResource("1_vn7f8")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 modulate = Color(0.96189, 0, 0.415493, 1)
-texture = ExtResource("2_ka87d")
+material = SubResource("ShaderMaterial_rnh73")
+sprite_frames = SubResource("SpriteFrames_fotw3")
+animation = &"walk_side"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 modulate = Color(0.96189, 0, 0.415493, 1)
-position = Vector2(0, 0.5)
+position = Vector2(15, -4)
 shape = SubResource("RectangleShape2D_rnh73")

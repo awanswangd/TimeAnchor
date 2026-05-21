@@ -23,7 +23,6 @@ var energy_drop_scene = preload("res://Scene/EnergyDrop.tscn")
 
 var current_health: int
 var current_energy: int
-var sprint_tick_timer: float = 0.0
 var is_blackhole_active: bool = false
 var is_invincible: bool = false 
 
@@ -138,16 +137,8 @@ func handle_movement(delta: float) -> void:
 		else:
 			anim.stop()
 		
-		if Input.is_action_pressed("sprint") and current_energy > 0 and input_dir != Vector2.ZERO:
-			current_speed = speed * 1.6 
-			sprint_tick_timer += delta
-			
-			if sprint_tick_timer >= 0.2:
-				sprint_tick_timer = 0.0
-				current_energy -= 1
-				energy_changed.emit(current_energy) 
-		else:
-			sprint_tick_timer = 0.0 
+		if Input.is_action_pressed("sprint") and input_dir != Vector2.ZERO:
+			current_speed = speed * 1.6
 			
 		velocity = input_dir * current_speed
 		if is_blackhole_active:
