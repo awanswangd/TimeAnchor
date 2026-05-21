@@ -23,6 +23,9 @@ func die() -> void:
 		if AudioManager.has_method("play_sfx"):
 			AudioManager.play_sfx(sfx_tentacle, true)
 	if tentacle_hp <= 0:
+		var cam = get_tree().get_first_node_in_group("camera")
+		if cam != null and cam.has_method("apply_shake"):
+			cam.apply_shake(15.0) # Getaran kuat saat tentakel mati
 		if AudioManager.has_method("play_sfx"):
 			AudioManager.play_sfx(sfx_tentacle_die, true)
 		if gm != null and gm.has_method("tentacle_destroyed"):

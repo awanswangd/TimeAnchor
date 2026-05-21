@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cfqot5elttgxn"
-path="res://.godot/imported/floor1.png-5db23f63ce525920a06908d849a31e39.ctex"
+uid="uid://egjiw3ph8mg7"
+path="res://.godot/imported/anchorui.png-e48a1c7e676db53d735433b5369c3b20.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/floor1.png"
-dest_files=["res://.godot/imported/floor1.png-5db23f63ce525920a06908d849a31e39.ctex"]
+source_file="res://Assets/anchorui.png"
+dest_files=["res://.godot/imported/anchorui.png-e48a1c7e676db53d735433b5369c3b20.ctex"]
 
 [params]
 

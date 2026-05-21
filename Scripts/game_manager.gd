@@ -237,7 +237,9 @@ func trigger_you_win() -> void:
 	munculkan_dialog([
 		"Pilot|Luar biasa Kapten! Semua cengkeraman entitas kosmik itu sudah hancur!",
 		"Kapten|Jalur sudah bersih! Tarik tuasnya sekarang!!",
-		"Pilot|Warping in 3... 2... 1... KITA BERHASIL LOLOS!"
+		"Pilot|Warping in 3... 2... 1... KITA BERHASIL LOLOS!",
+		"...",
+		"k̸͚̆ą̶̒l̶̲͗ĭ̷͍ã̵̟n̵̨̚ ̶̥̓b̶̫̅e̷̱̓r̷̠̆ű̸̳n̵̳͆t̴͈̉ǘ̸̺n̵̦̔g̵̝̓"
 	], false)
 	
 	await get_tree().create_timer(4.5).timeout

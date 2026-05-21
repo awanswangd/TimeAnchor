@@ -23,8 +23,9 @@ func stop_bgm() -> void:
 func pause_bgm(is_paused: bool) -> void:
 	bgm_player.stream_paused = is_paused
 
-func play_sfx(stream: AudioStream, randomize_pitch: bool = false) -> void:
-	if stream == null: return
+func play_sfx(stream: AudioStream, randomize_pitch: bool = false) -> AudioStreamPlayer:
+	if stream == null: return null
+	
 	var sfx_player = AudioStreamPlayer.new()
 	sfx_player.stream = stream
 	sfx_player.bus = "SFX"
@@ -34,3 +35,5 @@ func play_sfx(stream: AudioStream, randomize_pitch: bool = false) -> void:
 	add_child(sfx_player)
 	sfx_player.play()
 	sfx_player.finished.connect(func(): sfx_player.queue_free())
+	
+	return sfx_player

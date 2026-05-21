@@ -1,6 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://b2oah2mn5vb2r"]
+[gd_scene load_steps=5 format=3 uid="uid://b2oah2mn5vb2r"]
 
 [ext_resource type="Script" uid="uid://dsj15eoaxxost" path="res://Scripts/energy_drop.gd" id="1_mds3j"]
+[ext_resource type="AudioStream" uid="uid://djmx3at5pqvof" path="res://Audio/forceField_000.ogg" id="2_674ea"]
 [ext_resource type="Texture2D" uid="uid://dymsyggbr70f5" path="res://Assets/bensin.png" id="2_h41la"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_wdond"]
@@ -9,6 +10,7 @@ size = Vector2(50, 50)
 [node name="EnergyDrop" type="Area2D"]
 scale = Vector2(1.5, 1.5)
 script = ExtResource("1_mds3j")
+sfx_pickup = ExtResource("2_674ea")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 scale = Vector2(2, 2)

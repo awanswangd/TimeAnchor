@@ -29,6 +29,10 @@ position = Vector2(1004, 418)
 scale = Vector2(0.3, 0.3)
 texture = ExtResource("4_a1jsx")
 
+[node name="A Thing" type="Sprite2D" parent="."]
+position = Vector2(1004, 418)
+scale = Vector2(0.3, 0.3)
+
 [node name="DialogBox" type="Panel" parent="."]
 anchors_preset = 12
 anchor_top = 1.0

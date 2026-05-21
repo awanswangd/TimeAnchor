@@ -1,6 +1,7 @@
 extends CharacterBody2D
 @onready var anim: AnimatedSprite2D = $AnimatedSprite2D
 @onready var player_light: PointLight2D = $PointLight2D
+@onready var dash_smoke: AnimatedSprite2D = $DashSmoke
 #SIGNALS & PRELOADS
 signal health_changed(new_health: int)
 signal energy_changed(new_energy: int)
@@ -57,6 +58,14 @@ var hp_float: float = 100.0
 #ENVIRONMENT (VOID DAMAGE)
 var void_damage_interval: float = 0.5
 var void_damage_timer: float = 0.0
+
+@export_category("Audio Settings")
+@export var sfx_dash: AudioStream
+@export var sfx_damage: AudioStream
+@export var sfx_place_anchor: AudioStream
+var active_dash_audio: AudioStreamPlayer
+
+
 
 func _ready() -> void:
 	add_to_group("player") 
@@ -121,6 +130,8 @@ func handle_movement(delta: float) -> void:
 					collider.die()
 		if dash_timer <= 0:
 			is_dashing = false 
+			if is_instance_valid(active_dash_audio):
+				active_dash_audio.stop()
 			
 	else:
 		var input_dir: Vector2 = Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
@@ -174,7 +185,19 @@ func start_dash() -> void:
 	dash_direction = Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
 	
 	if dash_direction == Vector2.ZERO:
-		dash_direction = Vector2.RIGHT 
+		dash_direction = Vector2.RIGHT
+		
+	if sfx_dash != null:
+		active_dash_audio = AudioManager.play_sfx(sfx_dash, true)
+		
+	if dash_smoke != null:
+		dash_smoke.top_level = true             # 1. Lepaskan asap dari pergerakan bapaknya (Player)
+		dash_smoke.global_position = global_position # 2. Kunci posisi asap di koordinat AWAL dash dimulai
+				
+		dash_smoke.visible = true
+		dash_smoke.frame = 0
+		dash_smoke.play("smoke")
+		dash_smoke.rotation = dash_direction.angle() + PI
 	
 	dash_timer = dash_duration
 	current_cooldown = dash_cooldown_time
@@ -209,6 +232,9 @@ func try_place_anchor() -> void:
 	if cam != null and cam.has_method("apply_shake"):
 		cam.apply_shake(4.5)
 		
+	if sfx_place_anchor != null:
+		AudioManager.play_sfx(sfx_place_anchor, true)
+		
 	var anchor = time_anchor_scene.instantiate()
 	anchor.global_position = global_position
 	get_tree().current_scene.add_child(anchor)
@@ -230,6 +256,9 @@ func take_damage(amount: int) -> void:
 	
 	time_since_last_hit = 0.0
 	hp_float = float(current_health)
+	
+	if sfx_damage != null:
+		AudioManager.play_sfx(sfx_damage, true)
 	
 	var cam = get_tree().get_first_node_in_group("camera")
 	if cam != null and cam.has_method("apply_shake"):
@@ -284,3 +313,7 @@ func set_blackhole_active(active: bool) -> void:
 	is_blackhole_active = active
 	if player_light != null:
 		player_light.enabled = active
+
+
+func _on_dash_smoke_animation_finished() -> void:
+	pass # Replace with function body.
