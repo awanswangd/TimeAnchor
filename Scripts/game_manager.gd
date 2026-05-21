@@ -2,11 +2,11 @@ extends Node
 
 enum Phase { ACT_1_TUTORIAL, ACT_2_SURVIVAL, ACT_3_BOSS }
 var current_phase: Phase = Phase.ACT_1_TUTORIAL
-@onready var black_hole_visual = get_node_or_null("BlackHole")
+@onready var black_hole_visual = get_node_or_null("../BlackHole")
 @export_category("Game Settings")
 @export var tutorial_holes_amount: int = 5 #Jumlah lubang di Babak 1
 @export var tutorial_enemy_amount: int = 3 #Jumlah musuh di Babak 1
-@export var survival_duration: float = 120 #2 Menit untuk Babak 2
+@export var survival_duration: float = 12 #2 Menit untuk Babak 2
 @export var warp_duration: float = 60 #Waktu nahan Black Hole di Babak 3
 
 @export_category("Audio")
@@ -18,8 +18,13 @@ var current_timer: float = 0.0
 var tentacles_left: int = 0
 var is_tutorial_setup_done: bool = false 
 var is_game_active: bool = false 
+
 var dialog_30s_played: bool = false
 var dialog_10s_played: bool = false
+var dialog_dash_played: bool = false
+var dialog_tentacle_hit_played: bool = false
+var dialog_60s_played: bool = false 
+
 var ui_manager: CanvasLayer
 var dialog_scene = preload("res://Scene/DialogOverlay.tscn")
 var tentacle_scene = preload("res://Scene/Tentacle.tscn") 
@@ -68,8 +73,20 @@ func start_act_1() -> void:
 	is_game_active = true
 
 func process_act_1(_delta: float) -> void:
+	var enemies = get_tree().get_nodes_in_group("enemy")
 	var enemies_left = get_tree().get_nodes_in_group("enemy").size()
 	var holes_left = check_remaining_holes()
+	if not dialog_dash_played and enemies_left > 0:
+		var player = get_tree().get_first_node_in_group("player")
+		if player != null:
+			for enemy in enemies:
+				if enemy.global_position.distance_to(player.global_position) < 150.0:
+					dialog_dash_played = true
+					munculkan_dialog([
+						"Kapten|Gawat, mereka menyadari keberadaanku!",
+						"Kapten|Aku harus cepat! Tekan tombol gerak 2x (Double Tap) untuk DASH dan menghindar!"
+					])
+					break
 	if ui_manager != null and ui_manager.has_method("update_objective"):
 		ui_manager.update_objective("BABAK 1: Habisi %d Musuh & Tambal %d Lubang!" % [enemies_left, holes_left])
 	if enemies_left <= 0 and holes_left <= 0:
@@ -107,20 +124,26 @@ func start_act_2() -> void:
 		ui_manager.update_objective("BABAK 2: Bertahan Hidup Hingga Waktu Teleportasi Habis!")
 
 	munculkan_dialog([
-			"Pilot|Kerja Bagus Kapten! Mesin belakang sudah beres, kita akan mulai teleportasi dalam 2 menit!",
-			"Kapten|Bagus! Lakukan teleportasi sekarang!",
-			"Pilot|T-Tunggu Kapten! Sensor mendeteksi gelombang anomali lagi! MEREKA DATANG LEBIH BANYAK!!",
-			"Pilot|Kapten Teleportasi Akan siap dalam 2 menit, tolong bertahan hingga kita dapat berteleportasi!",
-			"Pilot|Saya akan Memberikan Akses Untuk Meledakkan Time Anchor anda, Tolong tetap hidup kapten!",
-			"Kapten|Baiklah, aku akan bertahan hidup!"
-		])
+		"Pilot|Kerja Bagus Kapten! Mesin belakang sudah beres!",
+		"Pilot|T-Tunggu Kapten! Sensor mendeteksi gelombang anomali lagi! MEREKA DATANG LEBIH BANYAK!!",
+		"Pilot|Teleportasi akan siap dalam 2 menit. Saya telah membuka kunci Detonator untuk Anda.",
+		"Kapten|Bagus. Aku bisa memasang Time Anchor dan meledakkannya untuk membasmi mereka!",
+		"Kapten|Pasang Anchor, pancing mereka mendekat, lalu LEDAKKAN! Aku tidak akan mati di sini!"
+	])
 
 
 func process_act_2(delta: float) -> void:
 	current_timer -= delta
 	if ui_manager.has_method("update_warp_timer"):
 		ui_manager.update_warp_timer(current_timer)
-		
+	
+	if current_timer <= 60.0 and not dialog_60s_played:
+		dialog_60s_played = true
+		munculkan_dialog([
+			"Pilot|Integritas lambung kapal menurun! Bertahanlah Kapten, waktunya tinggal 1 Menit!",
+			"Kapten|BERISIK! Fokus saja pada mesin Warp-nya, biar aku yang urus monster-monster ini!"
+		])
+	
 	if current_timer <= 30.0 and not dialog_30s_played:
 		dialog_30s_played = true
 		munculkan_dialog(["Pilot|30 Detik sebelum warping! Tahan posisi Kapten!"])
@@ -231,6 +254,13 @@ func spawn_tentacles() -> void:
 			get_parent().add_child(tentacle)
 			tentacles_left += 1
 			
+func tentacle_hit() -> void:
+	if not dialog_tentacle_hit_played:
+		dialog_tentacle_hit_played = true
+		munculkan_dialog([
+			"Kapten|Sialan! Kulit kosmik ini keras sekali!",
+			"Kapten|Satu ledakan tidak cukup. Aku harus meledakkannya berkali-kali sampai hancur!"
+		], true)
 
 func tentacle_destroyed() -> void:
 	tentacles_left -= 1

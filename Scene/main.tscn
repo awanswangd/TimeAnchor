@@ -84,6 +84,7 @@ starting_energy = 10
 script = ExtResource("6_1xcnr")
 
 [node name="GameManager" type="Node" parent="." groups=["game_manager"]]
+process_mode = 3
 script = ExtResource("7_ow1sv")
 bgm_act_1 = ExtResource("8_0sxm5")
 bgm_act_3 = ExtResource("8_hspdg")

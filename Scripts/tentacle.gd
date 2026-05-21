@@ -11,9 +11,11 @@ func die() -> void:
 	modulate = Color.PURPLE
 	await get_tree().create_timer(0.1).timeout
 	modulate = Color.WHITE
-	
+	var gm = get_tree().get_first_node_in_group("game_manager")
+	if tentacle_hp > 0:
+		if gm != null and gm.has_method("tentacle_hit"):
+			gm.tentacle_hit()
 	if tentacle_hp <= 0:
-		var gm = get_tree().get_first_node_in_group("game_manager")
 		if gm != null and gm.has_method("tentacle_destroyed"):
 			gm.tentacle_destroyed()
 		queue_free()
