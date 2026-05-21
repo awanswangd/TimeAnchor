@@ -10,8 +10,6 @@ func _set_health(new_health: int) -> void:
 	health = min(max_value, new_health)
 	value = health
 	
-	if health <= 0:
-		queue_free()
 	
 	if damage_bar != null and timer != null:
 		if health < prev_health:

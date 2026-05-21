@@ -1,5 +1,7 @@
 extends CharacterBody2D
-
+@onready var anim: AnimatedSprite2D = $AnimatedSprite2D
+@onready var player_light: PointLight2D = $PointLight2D
+@onready var dash_smoke: AnimatedSprite2D = $DashSmoke
 #SIGNALS & PRELOADS
 signal health_changed(new_health: int)
 signal energy_changed(new_energy: int)
@@ -22,7 +24,6 @@ var energy_drop_scene = preload("res://Scene/EnergyDrop.tscn")
 
 var current_health: int
 var current_energy: int
-var sprint_tick_timer: float = 0.0
 var is_blackhole_active: bool = false
 var is_invincible: bool = false 
 
@@ -30,7 +31,7 @@ var is_invincible: bool = false
 @export_group("Dash Settings")
 @export var dash_speed_multiplier: float = 3.5 
 @export var dash_duration: float = 0.2 
-@export var dash_cooldown_time: float = 2.5 
+@export var dash_cooldown_time: float = 1.5 
 @export var dash_energy_cost: int = 1 
 
 var is_dashing: bool = false
@@ -58,11 +59,19 @@ var hp_float: float = 100.0
 var void_damage_interval: float = 0.5
 var void_damage_timer: float = 0.0
 
+@export_category("Audio Settings")
+@export var sfx_dash: AudioStream
+@export var sfx_damage: AudioStream
+@export var sfx_place_anchor: AudioStream
+var active_dash_audio: AudioStreamPlayer
+
+
+
 func _ready() -> void:
 	add_to_group("player") 
 	current_health = max_health
 	current_energy = starting_energy
-	hp_float = float(max_health) # Inisialisasi regen
+	hp_float = float(max_health) #Inisialisasi regen
 	
 	var hb = get_tree().get_first_node_in_group("health_bar")
 	if hb != null and hb.has_method("init_health"):
@@ -84,7 +93,6 @@ func _physics_process(delta: float) -> void:
 	if not is_dashing:
 		check_void_damage(delta)
 		
-	# --- SISTEM AUTO REGEN HAFIZ ---
 	time_since_last_hit += delta
 	if time_since_last_hit >= regen_delay and current_health < max_health:
 		hp_float += regen_rate * delta
@@ -99,11 +107,12 @@ func _physics_process(delta: float) -> void:
 			var hb = get_tree().get_first_node_in_group("health_bar")
 			if hb != null:
 				hb.set_deferred("health", current_health)
-	# --------------------------------
-
-func _unhandled_input(event: InputEvent) -> void:
-	if event.is_action_pressed("place_anchor"):
+	if Input.is_action_just_pressed("place_anchor"):
 		try_place_anchor()
+		
+	if Input.is_action_just_pressed("dash"):
+		if current_cooldown <= 0 and current_energy >= dash_energy_cost and not is_dashing:
+			start_dash()
 
 func handle_movement(delta: float) -> void:
 	if is_dashing:
@@ -121,21 +130,28 @@ func handle_movement(delta: float) -> void:
 					collider.die()
 		if dash_timer <= 0:
 			is_dashing = false 
+			if is_instance_valid(active_dash_audio):
+				active_dash_audio.stop()
 			
 	else:
 		var input_dir: Vector2 = Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
 		var current_speed = speed 
 		
-		if Input.is_action_pressed("sprint") and current_energy > 0 and input_dir != Vector2.ZERO:
-			current_speed = speed * 1.6 
-			sprint_tick_timer += delta
-			
-			if sprint_tick_timer >= 0.2:
-				sprint_tick_timer = 0.0
-				current_energy -= 1
-				energy_changed.emit(current_energy) 
+		if input_dir != Vector2.ZERO:
+			if abs(input_dir.x) > abs(input_dir.y):
+				anim.animation = "walk_side"
+				anim.flip_h = input_dir.x > 0 
+			elif input_dir.y > 0:
+				anim.animation = "walk_front"
+			elif input_dir.y < 0:
+				anim.animation = "walk_back"
+				
+			anim.play()
 		else:
-			sprint_tick_timer = 0.0 
+			anim.stop()
+		
+		if Input.is_action_pressed("sprint") and input_dir != Vector2.ZERO:
+			current_speed = speed * 1.6
 			
 		velocity = input_dir * current_speed
 		if is_blackhole_active:
@@ -169,14 +185,26 @@ func start_dash() -> void:
 	dash_direction = Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
 	
 	if dash_direction == Vector2.ZERO:
-		dash_direction = Vector2.RIGHT 
+		dash_direction = Vector2.RIGHT
+		
+	if sfx_dash != null:
+		active_dash_audio = AudioManager.play_sfx(sfx_dash, true)
+		
+	if dash_smoke != null:
+		dash_smoke.top_level = true             # 1. Lepaskan asap dari pergerakan bapaknya (Player)
+		dash_smoke.global_position = global_position # 2. Kunci posisi asap di koordinat AWAL dash dimulai
+				
+		dash_smoke.visible = true
+		dash_smoke.frame = 0
+		dash_smoke.play("smoke")
+		dash_smoke.rotation = dash_direction.angle() + PI
 	
 	dash_timer = dash_duration
 	current_cooldown = dash_cooldown_time
 	
 	var skill_ui = get_tree().get_first_node_in_group("skill_ui")
 	if skill_ui != null and skill_ui.has_method("start_dash_cooldown"):
-		skill_ui.start_dash_cooldown()
+		skill_ui.start_dash_cooldown(dash_cooldown_time)
 	
 	current_energy -= dash_energy_cost
 	energy_changed.emit(current_energy)
@@ -184,11 +212,9 @@ func start_dash() -> void:
 	if eb != null:
 		eb.set_deferred("energy", current_energy)
 		
-	# --- MEKANIK I-FRAME 0,3 DETIK ---
 	is_invincible = true
 	await get_tree().create_timer(0.3).timeout
 	is_invincible = false
-	# ---------------------------------
 
 func try_place_anchor() -> void:
 	if anchor_current_cooldown > 0: return
@@ -206,6 +232,9 @@ func try_place_anchor() -> void:
 	if cam != null and cam.has_method("apply_shake"):
 		cam.apply_shake(4.5)
 		
+	if sfx_place_anchor != null:
+		AudioManager.play_sfx(sfx_place_anchor, true)
+		
 	var anchor = time_anchor_scene.instantiate()
 	anchor.global_position = global_position
 	get_tree().current_scene.add_child(anchor)
@@ -213,13 +242,11 @@ func try_place_anchor() -> void:
 	
 	var skill_ui = get_tree().get_first_node_in_group("skill_ui")
 	if skill_ui != null and skill_ui.has_method("start_anchor_cooldown"):
-		skill_ui.start_anchor_cooldown()
+		skill_ui.start_anchor_cooldown(anchor_cooldown_time)
 
 func take_damage(amount: int) -> void:
-	# --- CEK I-FRAME SEBELUM NGURANGIN DARAH ---
 	if is_invincible:
 		return
-	# -------------------------------------------
 		
 	if current_health <= 0:
 		return
@@ -227,10 +254,11 @@ func take_damage(amount: int) -> void:
 	current_health -= amount
 	health_changed.emit(current_health)
 	
-	# --- RESET TIMER REGEN & SINKRONISASI ---
 	time_since_last_hit = 0.0
 	hp_float = float(current_health)
-	# ----------------------------------------
+	
+	if sfx_damage != null:
+		AudioManager.play_sfx(sfx_damage, true)
 	
 	var cam = get_tree().get_first_node_in_group("camera")
 	if cam != null and cam.has_method("apply_shake"):
@@ -239,10 +267,15 @@ func take_damage(amount: int) -> void:
 	if hb != null:
 		hb.set_deferred("health", current_health)
 
+	is_invincible = true 
+	Engine.time_scale = 0.05
+	await get_tree().create_timer(0.1, true, false, true).timeout 
+	Engine.time_scale = 1.0
 	modulate = Color.RED
-	await get_tree().create_timer(0.1).timeout
+	await get_tree().create_timer(0.5).timeout 
 	modulate = Color.WHITE
-	
+	await get_tree().create_timer(0.5).timeout 
+	is_invincible = false 
 	if current_health <= 0:
 		die()
 
@@ -265,14 +298,22 @@ func check_void_damage(delta: float) -> void:
 		
 		var local_pos = arena_tilemap.to_local(global_position)
 		var grid_pos = arena_tilemap.local_to_map(local_pos)
-		var floor_id = arena_tilemap.get_cell_source_id(grid_pos)
-		
-		if floor_id == -1: 
+		var grid_manager = get_tree().get_first_node_in_group("grid_manager")
+		if grid_manager == null: 
+			return
+		var current_coords = arena_tilemap.get_cell_atlas_coords(grid_pos)
+		if current_coords == grid_manager.hole_tile_coords: 
 			if current_energy > 0:
 				current_energy -= 1 
 				energy_changed.emit(current_energy)
 			else:
-				take_damage(10) 
+				take_damage(10)
 
 func set_blackhole_active(active: bool) -> void:
 	is_blackhole_active = active
+	if player_light != null:
+		player_light.enabled = active
+
+
+func _on_dash_smoke_animation_finished() -> void:
+	pass # Replace with function body.

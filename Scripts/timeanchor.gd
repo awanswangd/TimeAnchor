@@ -5,6 +5,8 @@ extends StaticBody2D
 @export var floor_atlas_coords: Vector2i = Vector2i(0, 0) 
 var is_player_inside: bool = false
 var tile_size: float = 64.0 
+var has_detonated: bool = false 
+
 @onready var aura_visual: Sprite2D = $AuraArea/AuraVisual
 @export var sfx_explosion_suspense: AudioStream
 @export var sfx_explosion: AudioStream
@@ -15,7 +17,7 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	if is_player_inside and Input.is_action_just_pressed("detonate"):
-		if not Global.can_detonate:
+		if not Global.can_detonate or has_detonated:
 			return
 		detonate()
 
@@ -32,17 +34,34 @@ func _on_aura_area_body_exited(body: Node2D) -> void:
 		body.apply_time_warp(false)
 
 func setup_aura_visual_size() -> void:
-	if aura_visual == null or aura_visual.texture == null:
-		return
 	var safe_diameter_in_pixels = (radius * 2 + 1) * tile_size
-	var original_texture_size = aura_visual.texture.get_size().x
-	var required_scale = safe_diameter_in_pixels / original_texture_size
-	aura_visual.scale = Vector2(required_scale, required_scale)
+	var safe_radius = safe_diameter_in_pixels / 2.0 
+	
+	if aura_visual != null and aura_visual.texture != null:
+		var original_texture_size = aura_visual.texture.get_size().x
+		var required_scale = safe_diameter_in_pixels / original_texture_size
+		aura_visual.scale = Vector2(required_scale, required_scale)
+		
+	var collision_node = get_node_or_null("AuraArea/CollisionShape2D")
+	if collision_node != null:
+		var new_shape = CircleShape2D.new()
+		new_shape.radius = safe_radius
+		collision_node.shape = new_shape
 
 func detonate() -> void:
+	has_detonated = true
+	var tween = create_tween().set_loops(5)
+	tween.tween_property($Sprite2D, "modulate", Color.RED, 0.1)
+	tween.tween_property($Sprite2D, "modulate", Color.WHITE, 0.1)
+	
+	if aura_visual != null:
+		var tween_aura = create_tween()
+		tween_aura.tween_property(aura_visual, "modulate", Color(1.0, 0.2, 0.2, 0.8), 0.8)
+		tween_aura.parallel().tween_property(aura_visual, "scale", aura_visual.scale * 1.1, 0.8)
 	AudioManager.play_sfx(sfx_explosion_suspense, true)
 	await get_tree().create_timer(1.0).timeout
 	AudioManager.play_sfx(sfx_explosion, true)
+	
 	var cam = get_tree().get_first_node_in_group("camera")
 	if cam != null and cam.has_method("apply_shake"):
 		cam.apply_shake(15.0)
@@ -58,13 +77,16 @@ func detonate() -> void:
 	for body in overlapping_bodies:
 		if body.is_in_group("enemy") and body.has_method("die"):
 			body.die() 
-		area.monitoring = false 
+	area.set_deferred("monitoring", false) 
+	
 	if aura_visual != null:
 		aura_visual.hide()
 	$Sprite2D.hide() 
+	
 	var particles = get_node_or_null("ExplosionParticles")
 	if particles != null:
 		particles.emitting = true
+		
 	await get_tree().create_timer(1.0).timeout
 	queue_free()
 
@@ -81,13 +103,10 @@ func restore_surrounding_tiles() -> void:
 	for x in range(-radius, radius + 1):
 		for y in range(-radius, radius + 1):
 			var target_cell = center_grid_pos + Vector2i(x, y)
-			var current_id = tilemap.get_cell_source_id(target_cell)
 			
-			if current_id == -1:
-				# Tanyakan gambar aslinya ke GridManager
+			var current_coords = tilemap.get_cell_atlas_coords(target_cell)
+			
+			if current_coords == grid_manager.hole_tile_coords or tilemap.get_cell_source_id(target_cell) == -1:
 				var original_coords = grid_manager.get_original_floor_coords(target_cell)
-				
-				# Jika jawabannya bukan Vector2i(-1, -1), berarti area itu dulunya lantai
 				if original_coords != Vector2i(-1, -1):
-					# Kembalikan lantai menggunakan gambar spesifiknya!
 					tilemap.set_cell(target_cell, floor_id, original_coords)

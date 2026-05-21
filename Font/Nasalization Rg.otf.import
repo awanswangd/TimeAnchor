@@ -1,0 +1,35 @@
+[remap]
+
+importer="font_data_dynamic"
+type="FontFile"
+uid="uid://clma3d6ui3ry3"
+path="res://.godot/imported/Nasalization Rg.otf-0fe1591c6e16b0f38c2702c4f12f7a1a.fontdata"
+
+[deps]
+
+source_file="res://Font/Nasalization Rg.otf"
+dest_files=["res://.godot/imported/Nasalization Rg.otf-0fe1591c6e16b0f38c2702c4f12f7a1a.fontdata"]
+
+[params]
+
+Rendering=null
+antialiasing=1
+generate_mipmaps=false
+disable_embedded_bitmaps=true
+multichannel_signed_distance_field=false
+msdf_pixel_range=8
+msdf_size=48
+allow_system_fallback=true
+force_autohinter=false
+hinting=1
+subpixel_positioning=4
+keep_rounding_remainders=true
+oversampling=0.0
+Fallbacks=null
+fallbacks=[]
+Compress=null
+compress=true
+preload=[]
+language_support={}
+script_support={}
+opentype_features={}

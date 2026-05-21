@@ -1,7 +1,7 @@
 extends Camera2D
 
 @export var default_strength: float = 30.0 # Kekuatan getaran standar
-@export var shake_fade: float = 5.0 # Seberapa cepat getarannya mereda
+@export var shake_fade: float = 5.0 #Seberapa cepat getarannya mereda
 
 var rng = RandomNumberGenerator.new()
 var shake_strength: float = 0.0

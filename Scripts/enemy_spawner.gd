@@ -9,17 +9,15 @@ var player: Node2D
 var spawn_timer: Timer
 
 func _ready() -> void:
-	add_to_group("spawner") # Tambahin ke grup biar gampang dicari GameManager
+	add_to_group("spawner") 
 	player = get_tree().get_first_node_in_group("player")
 	
 	spawn_timer = Timer.new()
 	spawn_timer.wait_time = spawn_interval
-	# autostart dibikin false juga, nunggu disuruh GameManager
 	spawn_timer.autostart = false 
 	spawn_timer.timeout.connect(spawn_enemy)
 	add_child(spawn_timer)
 
-# --- FUNGSI KONTROL DARI GAME MANAGER ---
 func pause_spawning() -> void:
 	spawn_timer.stop()
 
@@ -29,7 +27,6 @@ func resume_spawning() -> void:
 func spawn_specific_amount(amount: int) -> void:
 	for i in range(amount):
 		spawn_enemy()
-# ----------------------------------------
 
 func spawn_enemy() -> void:
 	if player == null or enemy_scene == null: return
